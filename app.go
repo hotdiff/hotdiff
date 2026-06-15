@@ -2,26 +2,84 @@ package main
 
 import (
 	"context"
-	"fmt"
+	"hotdiff/diff"
+
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
-// App struct
 type App struct {
 	ctx context.Context
 }
 
-// NewApp creates a new App application struct
 func NewApp() *App {
 	return &App{}
 }
 
-// startup is called when the app starts. The context is saved
-// so we can call the runtime methods
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
 }
 
-// Greet returns a greeting for the given name
-func (a *App) Greet(name string) string {
-	return fmt.Sprintf("Hello %s, It's show time!", name)
+func (a *App) SelectDirectory() string {
+	dir, err := runtime.OpenDirectoryDialog(a.ctx, runtime.OpenDialogOptions{
+		Title: "选择目录",
+	})
+	if err != nil {
+		return ""
+	}
+	return dir
+}
+
+func (a *App) SelectFile() string {
+	file, err := runtime.OpenFileDialog(a.ctx, runtime.OpenDialogOptions{
+		Title: "选择文件",
+	})
+	if err != nil {
+		return ""
+	}
+	return file
+}
+
+func (a *App) SelectLeftFile() string {
+	file, err := runtime.OpenFileDialog(a.ctx, runtime.OpenDialogOptions{
+		Title: "选择左侧文件",
+	})
+	if err != nil {
+		return ""
+	}
+	return file
+}
+
+func (a *App) SelectRightFile() string {
+	file, err := runtime.OpenFileDialog(a.ctx, runtime.OpenDialogOptions{
+		Title: "选择右侧文件",
+	})
+	if err != nil {
+		return ""
+	}
+	return file
+}
+
+func (a *App) StartCompare(leftDir, rightDir string) {
+	ch := make(chan diff.CompareProgress, 100)
+	go func() {
+		diff.CompareDirs(leftDir, rightDir, ch)
+		close(ch)
+	}()
+	go func() {
+		for p := range ch {
+			runtime.EventsEmit(a.ctx, "compare-progress", p)
+		}
+	}()
+}
+
+func (a *App) GetDiffDetail(leftPath, rightPath string) map[string]interface{} {
+	diffHTML, isCsv, err := diff.CompareFiles(leftPath, rightPath)
+	result := map[string]interface{}{
+		"html":  diffHTML,
+		"isCsv": isCsv,
+	}
+	if err != nil {
+		result["error"] = err.Error()
+	}
+	return result
 }

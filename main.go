@@ -17,9 +17,11 @@ func main() {
 
 	// Create application with options
 	err := wails.Run(&options.App{
-		Title:  "hotdiff",
-		Width:  1024,
-		Height: 768,
+		Title:  "HotDiff - 文件比较工具",
+		Width:  1400,
+		Height: 900,
+		MinWidth:  1000,
+		MinHeight: 700,
 		AssetServer: &assetserver.Options{
 			Assets: assets,
 		},

@@ -1,0 +1,37 @@
+{{define "csv_diff"}}
+<div class="diff-file-header">
+  <span class="diff-file-path">CSV Diff: {{.LeftPath}} vs {{.RightPath}}</span>
+</div>
+{{if .Table}}
+<table class="csv-diff-table">
+  <thead>
+    <tr>
+      <th class="line-num">#</th>
+      {{range $i, $cell := .Table.Headers}}
+      <th class="{{csvCellClass $cell.CellType}}">
+        {{- if $cell.LeftValue}}<span class="removed-code">{{$cell.LeftValue}}</span>{{end}}
+        {{- if and $cell.LeftValue $cell.RightValue}} {{end}}
+        {{- if $cell.RightValue}}<span class="added-code">{{$cell.RightValue}}</span>{{end}}
+      </th>
+      {{end}}
+    </tr>
+  </thead>
+  <tbody>
+    {{range $i, $row := .Table.Rows}}
+    <tr>
+      <td class="line-num">{{$row.RowNum}}</td>
+      {{range $j, $cell := $row.Cells}}
+      <td class="{{csvCellClass $cell.CellType}}">
+        {{- if $cell.LeftValue}}<span class="removed-code">{{$cell.LeftValue}}</span>{{end}}
+        {{- if and $cell.LeftValue $cell.RightValue}} {{end}}
+        {{- if $cell.RightValue}}<span class="added-code">{{$cell.RightValue}}</span>{{end}}
+      </td>
+      {{end}}
+    </tr>
+    {{end}}
+  </tbody>
+</table>
+{{else}}
+<div class="empty-diff">Files are identical</div>
+{{end}}
+{{end}}
