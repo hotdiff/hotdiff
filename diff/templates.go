@@ -15,7 +15,13 @@ var templateFS embed.FS
 
 var diffFuncs = template.FuncMap{
 	"safe": func(s string) template.HTML {
-		return template.HTML(highlightContent(s))
+		return template.HTML(html.EscapeString(s))
+	},
+	"safeLeft": func(s string) template.HTML {
+		return template.HTML(`<span class="removed-code">` + html.EscapeString(s) + `</span>`)
+	},
+	"safeRight": func(s string) template.HTML {
+		return template.HTML(`<span class="added-code">` + html.EscapeString(s) + `</span>`)
 	},
 	"csvCellClass": func(cellType CsvDiffCellType) string {
 		switch cellType {
@@ -31,22 +37,84 @@ var diffFuncs = template.FuncMap{
 	},
 }
 
-func highlightContent(line string) string {
-	if len(line) == 0 {
-		return ""
-	}
-	prefix := line[0]
-	content := line[1:]
+func unifiedToSplit(lines []RawDiffLine) []SplitLine {
+	var split []SplitLine
 
-	escaped := html.EscapeString(content)
+	for i := 0; i < len(lines); i++ {
+		line := lines[i]
 
-	if prefix == '+' {
-		return `<span class="added-code">` + escaped + `</span>`
+		if line.Type == '@' {
+			split = append(split, SplitLine{
+				Type:        SplitSection,
+				SectionText: line.Content,
+			})
+			continue
+		}
+
+		if line.Type == ' ' {
+			split = append(split, SplitLine{
+				LeftNum:   line.LeftNum,
+				RightNum:  line.RightNum,
+				LeftLine:  line.Content[1:],
+				RightLine: line.Content[1:],
+				Type:      SplitContext,
+			})
+			continue
+		}
+
+		if line.Type == '-' {
+			var delLines []RawDiffLine
+			delLines = append(delLines, line)
+			i++
+			for i < len(lines) && lines[i].Type == '-' {
+				delLines = append(delLines, lines[i])
+				i++
+			}
+
+			var addLines []RawDiffLine
+			for i < len(lines) && lines[i].Type == '+' {
+				addLines = append(addLines, lines[i])
+				i++
+			}
+			i--
+
+			pairCount := len(delLines)
+			if len(addLines) > pairCount {
+				pairCount = len(addLines)
+			}
+
+			for j := 0; j < pairCount; j++ {
+				sl := SplitLine{}
+				if j < len(delLines) {
+					sl.LeftNum = delLines[j].LeftNum
+					sl.LeftLine = delLines[j].Content[1:]
+				}
+				if j < len(addLines) {
+					sl.RightNum = addLines[j].RightNum
+					sl.RightLine = addLines[j].Content[1:]
+				}
+				if j >= len(delLines) {
+					sl.Type = SplitAdd
+				} else if j >= len(addLines) {
+					sl.Type = SplitDel
+				} else {
+					sl.Type = SplitChanged
+				}
+				split = append(split, sl)
+			}
+			continue
+		}
+
+		if line.Type == '+' {
+			split = append(split, SplitLine{
+				RightNum:  line.RightNum,
+				RightLine: line.Content[1:],
+				Type:      SplitAdd,
+			})
+		}
 	}
-	if prefix == '-' {
-		return `<span class="removed-code">` + escaped + `</span>`
-	}
-	return escaped
+
+	return split
 }
 
 func renderFileDiff(leftPath, rightPath string) (string, error) {
@@ -67,8 +135,10 @@ func renderFileDiff(leftPath, rightPath string) (string, error) {
 		shortRight = ""
 	}
 
-	tmpl := template.New("diff_unified.tmpl").Funcs(diffFuncs)
-	tmpl, err = tmpl.ParseFS(templateFS, "templates/diff_unified.tmpl")
+	splitLines := unifiedToSplit(diffFile.Lines)
+
+	tmpl := template.New("diff_split.tmpl").Funcs(diffFuncs)
+	tmpl, err = tmpl.ParseFS(templateFS, "templates/diff_split.tmpl")
 	if err != nil {
 		return "", fmt.Errorf("parse template: %w", err)
 	}
@@ -76,15 +146,15 @@ func renderFileDiff(leftPath, rightPath string) (string, error) {
 	data := struct {
 		OldName string
 		NewName string
-		Lines   []RawDiffLine
+		Lines   []SplitLine
 	}{
 		OldName: shortLeft,
 		NewName: shortRight,
-		Lines:   diffFile.Lines,
+		Lines:   splitLines,
 	}
 
 	var buf strings.Builder
-	err = tmpl.ExecuteTemplate(&buf, "diff_unified", data)
+	err = tmpl.ExecuteTemplate(&buf, "diff_split", data)
 	if err != nil {
 		return "", fmt.Errorf("execute template: %w", err)
 	}

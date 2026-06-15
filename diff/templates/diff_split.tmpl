@@ -1,0 +1,86 @@
+{{define "diff_split"}}
+{{$oldName := .OldName}}
+{{$newName := .NewName}}
+<div class="diff-file-header">
+  <span class="diff-file-path">
+    <span class="old-label">{{if $oldName}}{{$oldName}}{{else}}[new]{{end}}</span>
+    <span class="vs"> ⇔ </span>
+    <span class="new-label">{{if $newName}}{{$newName}}{{else}}[deleted]{{end}}</span>
+  </span>
+</div>
+<div class="diff-split-wrapper">
+  <div class="diff-panel left-panel">
+    <table class="diff-table split">
+      <colgroup>
+        <col width="60">
+        <col width="20">
+        <col>
+      </colgroup>
+      {{range $i, $line := .Lines}}
+        {{if eq $line.Type 4}}
+        <tr class="tag-code">
+          <td colspan="3" class="lines-code blob-hunk">
+            <code class="code-inner">{{$line.SectionText}}</code>
+          </td>
+        </tr>
+        {{else if eq $line.Type 2}}
+        <tr class="del-code">
+          <td class="lines-num lines-num-old">{{$line.LeftNum}}</td>
+          <td class="lines-type-marker del-code"><span class="tw-font-mono">-</span></td>
+          <td class="chroma lines-code"><code class="code-inner">{{$line.LeftLine | safeLeft}}</code></td>
+        </tr>
+        {{else if eq $line.Type 1}}
+        <tr class="del-code">
+          <td class="lines-num lines-num-old">{{$line.LeftNum}}</td>
+          <td class="lines-type-marker del-code"><span class="tw-font-mono">-</span></td>
+          <td class="chroma lines-code"><code class="code-inner">{{$line.LeftLine | safeLeft}}</code></td>
+        </tr>
+        {{else}}
+        <tr class="same-code">
+          <td class="lines-num lines-num-old">{{if $line.LeftNum}}{{$line.LeftNum}}{{end}}</td>
+          <td class="lines-type-marker"><span class="tw-font-mono"> </span></td>
+          <td class="chroma lines-code"><code class="code-inner">{{if $line.LeftLine}}{{$line.LeftLine | safe}}{{end}}</code></td>
+        </tr>
+        {{end}}
+      {{end}}
+    </table>
+  </div>
+  <div class="diff-divider"></div>
+  <div class="diff-panel right-panel">
+    <table class="diff-table split">
+      <colgroup>
+        <col width="60">
+        <col width="20">
+        <col>
+      </colgroup>
+      {{range $i, $line := .Lines}}
+        {{if eq $line.Type 4}}
+        <tr class="tag-code">
+          <td colspan="3" class="lines-code blob-hunk">
+            <code class="code-inner">{{$line.SectionText}}</code>
+          </td>
+        </tr>
+        {{else if eq $line.Type 3}}
+        <tr class="add-code">
+          <td class="lines-num lines-num-new">{{$line.RightNum}}</td>
+          <td class="lines-type-marker add-code"><span class="tw-font-mono">+</span></td>
+          <td class="chroma lines-code"><code class="code-inner">{{$line.RightLine | safeRight}}</code></td>
+        </tr>
+        {{else if eq $line.Type 1}}
+        <tr class="add-code">
+          <td class="lines-num lines-num-new">{{$line.RightNum}}</td>
+          <td class="lines-type-marker add-code"><span class="tw-font-mono">+</span></td>
+          <td class="chroma lines-code"><code class="code-inner">{{$line.RightLine | safeRight}}</code></td>
+        </tr>
+        {{else}}
+        <tr class="same-code">
+          <td class="lines-num lines-num-new">{{if $line.RightNum}}{{$line.RightNum}}{{end}}</td>
+          <td class="lines-type-marker"><span class="tw-font-mono"> </span></td>
+          <td class="chroma lines-code"><code class="code-inner">{{if $line.RightLine}}{{$line.RightLine | safe}}{{end}}</code></td>
+        </tr>
+        {{end}}
+      {{end}}
+    </table>
+  </div>
+</div>
+{{end}}

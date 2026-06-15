@@ -472,6 +472,50 @@ body {
   color: #f38ba8;
 }
 
+.diff-split-wrapper {
+  display: flex;
+  height: 100%;
+}
+
+.diff-panel {
+  flex: 1;
+  overflow: auto;
+  min-width: 0;
+}
+
+.diff-panel .diff-table {
+  width: 100%;
+  table-layout: fixed;
+}
+
+.diff-divider {
+  width: 4px;
+  background: #313244;
+  cursor: col-resize;
+  flex-shrink: 0;
+}
+.diff-divider:hover {
+  background: #cba6f7;
+}
+
+.diff-file-header .old-label { color: #f38ba8; }
+.diff-file-header .new-label { color: #a6e3a1; }
+.diff-file-header .vs { color: #585b70; }
+
+.left-panel .del-code .lines-code {
+  background: #3a1e1e;
+}
+.left-panel .del-code .lines-num-old {
+  background: #3a1e1e;
+}
+
+.right-panel .add-code .lines-code {
+  background: #1e3a2f;
+}
+.right-panel .add-code .lines-num-new {
+  background: #1e3a2f;
+}
+
 .empty-diff {
   padding: 40px;
   text-align: center;
