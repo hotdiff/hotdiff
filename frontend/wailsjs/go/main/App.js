@@ -14,14 +14,6 @@ export function SelectFile() {
   return window['go']['main']['App']['SelectFile']();
 }
 
-export function SelectLeftFile() {
-  return window['go']['main']['App']['SelectLeftFile']();
-}
-
-export function SelectRightFile() {
-  return window['go']['main']['App']['SelectRightFile']();
-}
-
 export function StartCompare(arg1, arg2) {
   return window['go']['main']['App']['StartCompare'](arg1, arg2);
 }

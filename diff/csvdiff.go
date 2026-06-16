@@ -77,6 +77,10 @@ func csvRowsEqual(a, b [][]string) bool {
 	return true
 }
 
+func ComputeCsvDiff(leftPath, rightPath string) (*CsvDiffTable, error) {
+	return computeCsvDiff(leftPath, rightPath)
+}
+
 func computeCsvDiff(leftPath, rightPath string) (*CsvDiffTable, error) {
 	var leftRows, rightRows [][]string
 	var err error

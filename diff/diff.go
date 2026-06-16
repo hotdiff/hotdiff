@@ -217,9 +217,13 @@ func gitDiffFiles(leftPath, rightPath string) (same bool, similar bool, err erro
 	return true, false, nil
 }
 
-func isLikelyCsv(path string) bool {
+func IsLikelyCsv(path string) bool {
 	ext := strings.ToLower(filepath.Ext(path))
 	return ext == ".csv" || ext == ".tsv"
+}
+
+func isLikelyCsv(path string) bool {
+	return IsLikelyCsv(path)
 }
 
 
