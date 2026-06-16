@@ -235,7 +235,6 @@ export default function ResultView({ tab, onOpenFileDiff }: ResultViewProps) {
           fontSize: 12,
           fontWeight: 700,
           color: '#a6adc8',
-          textTransform: 'uppercase',
           overflow: 'hidden',
           textOverflow: 'ellipsis',
           whiteSpace: 'nowrap',
@@ -247,7 +246,6 @@ export default function ResultView({ tab, onOpenFileDiff }: ResultViewProps) {
           fontSize: 12,
           fontWeight: 700,
           color: '#a6adc8',
-          textTransform: 'uppercase',
           textAlign: 'center',
         }}>
           状态
@@ -257,7 +255,6 @@ export default function ResultView({ tab, onOpenFileDiff }: ResultViewProps) {
           fontSize: 12,
           fontWeight: 700,
           color: '#a6adc8',
-          textTransform: 'uppercase',
           overflow: 'hidden',
           textOverflow: 'ellipsis',
           whiteSpace: 'nowrap',
