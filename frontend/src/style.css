@@ -9,20 +9,37 @@ body {
 }
 
 #app {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
 }
 
 * {
   box-sizing: border-box;
 }
 
-.app-container {
+.app-shell {
   display: flex;
   flex-direction: column;
   height: 100vh;
   background: #1e1e2e;
+}
+
+.tab-bar-row {
+  display: flex;
+  background: #11111b;
+  border-bottom: 1px solid #313244;
+  overflow-x: auto;
+  flex-shrink: 0;
+  align-items: flex-end;
+}
+
+.tab-content-area {
+  flex: 1;
+  overflow: hidden;
+}
+
+.result-view {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .app-header {
@@ -217,10 +234,6 @@ body {
   white-space: nowrap;
 }
 
-.result-layout {
-  position: relative;
-}
-
 .result-content {
   flex: 1;
   display: flex;
@@ -310,23 +323,6 @@ body {
   flex-shrink: 0;
 }
 
-.tab-container {
-  border-top: 2px solid #313244;
-  display: flex;
-  flex-direction: column;
-  max-height: 50%;
-}
-
-.tab-container.hidden {
-  display: none;
-}
-
-.tab-bar {
-  display: flex;
-  background: #181825;
-  overflow-x: auto;
-}
-
 .tab-item {
   display: flex;
   align-items: center;
@@ -359,12 +355,6 @@ body {
 }
 .tab-close:hover {
   background: #45475a;
-}
-
-.tab-content {
-  flex: 1;
-  overflow: auto;
-  background: #1e1e2e;
 }
 
 .tab-loading {
