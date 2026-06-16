@@ -304,18 +304,54 @@ function setupCollapseToggle(container) {
 }
 
 function applyCollapse(leftPanel, rightPanel, collapsed) {
-  const leftRows = leftPanel.querySelectorAll('tr');
-  const rightRows = rightPanel.querySelectorAll('tr');
+  const leftTable = leftPanel.querySelector('table');
+  const rightTable = rightPanel.querySelector('table');
+  if (!leftTable || !rightTable) return;
+
+  leftTable.querySelectorAll('.collapse-placeholder').forEach(el => el.remove());
+  rightTable.querySelectorAll('.collapse-placeholder').forEach(el => el.remove());
+
+  const leftRows = leftTable.querySelectorAll('tr:not(.collapse-placeholder)');
+  const rightRows = rightTable.querySelectorAll('tr:not(.collapse-placeholder)');
   const len = Math.min(leftRows.length, rightRows.length);
 
-  for (let i = 0; i < len; i++) {
-    const lr = leftRows[i];
-    const rr = rightRows[i];
-    if (lr.classList.contains('same-code') && rr.classList.contains('same-code')) {
-      lr.style.display = collapsed ? 'none' : '';
-      rr.style.display = collapsed ? 'none' : '';
+  if (!collapsed) {
+    for (let i = 0; i < len; i++) {
+      leftRows[i].style.display = '';
+      rightRows[i].style.display = '';
+    }
+    return;
+  }
+
+  let i = 0;
+  while (i < len) {
+    if (isUnchanged(leftRows[i], rightRows[i])) {
+      const start = i;
+      while (i < len && isUnchanged(leftRows[i], rightRows[i])) i++;
+      const count = i - start;
+
+      for (let j = start; j < i; j++) {
+        leftRows[j].style.display = 'none';
+        rightRows[j].style.display = 'none';
+      }
+
+      const ph = `<tr class="collapse-placeholder"><td colspan="3" class="placeholder-cell">⋮ ${count} unchanged lines</td></tr>`;
+
+      if (i < len) {
+        leftRows[i].insertAdjacentHTML('beforebegin', ph);
+        rightRows[i].insertAdjacentHTML('beforebegin', ph);
+      } else {
+        leftTable.insertAdjacentHTML('beforeend', ph);
+        rightTable.insertAdjacentHTML('beforeend', ph);
+      }
+    } else {
+      i++;
     }
   }
+}
+
+function isUnchanged(leftRow, rightRow) {
+  return leftRow.classList.contains('same-code') && rightRow.classList.contains('same-code');
 }
 
 function syncSplitScroll(container) {

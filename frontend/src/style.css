@@ -509,6 +509,12 @@ body {
   table-layout: fixed;
 }
 
+.diff-panel::after {
+  content: '';
+  display: block;
+  height: 40vh;
+}
+
 .diff-divider {
   width: 4px;
   background: #313244;
@@ -537,7 +543,18 @@ body {
   background: #1e3a2f;
 }
 
-.empty-diff {
+.collapse-placeholder td {
+  padding: 4px 12px !important;
+  color: #6c7086;
+  font-size: 11px;
+  font-style: italic;
+  text-align: center;
+  background: #181825;
+}
+
+.placeholder-cell {
+  font-family: inherit;
+}
   padding: 40px;
   text-align: center;
   color: #6c7086;
