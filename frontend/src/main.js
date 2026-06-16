@@ -283,6 +283,39 @@ function renderFileContent(area, tab) {
   }
   area.innerHTML = tab.content || '<div class="error-message">暂无内容</div>';
   syncSplitScroll(area);
+  setupCollapseToggle(area);
+}
+
+function setupCollapseToggle(container) {
+  const header = container.querySelector('.diff-file-header');
+  const leftPanel = container.querySelector('.left-panel');
+  const rightPanel = container.querySelector('.right-panel');
+  if (!header || !leftPanel || !rightPanel) return;
+
+  const btn = document.createElement('button');
+  btn.className = 'collapse-toggle-btn';
+  btn.title = '折叠未变化区域';
+  btn.innerHTML = '&plusmn;';
+  btn.addEventListener('click', () => {
+    btn.classList.toggle('active');
+    applyCollapse(leftPanel, rightPanel, btn.classList.contains('active'));
+  });
+  header.appendChild(btn);
+}
+
+function applyCollapse(leftPanel, rightPanel, collapsed) {
+  const leftRows = leftPanel.querySelectorAll('tr');
+  const rightRows = rightPanel.querySelectorAll('tr');
+  const len = Math.min(leftRows.length, rightRows.length);
+
+  for (let i = 0; i < len; i++) {
+    const lr = leftRows[i];
+    const rr = rightRows[i];
+    if (lr.classList.contains('same-code') && rr.classList.contains('same-code')) {
+      lr.style.display = collapsed ? 'none' : '';
+      rr.style.display = collapsed ? 'none' : '';
+    }
+  }
 }
 
 function syncSplitScroll(container) {

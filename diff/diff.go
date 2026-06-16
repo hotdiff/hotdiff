@@ -248,7 +248,7 @@ type RawDiffFile struct {
 }
 
 func ParseGitDiffOutput(leftPath, rightPath string) ([]RawDiffFile, error) {
-	cmd := exec.Command("git", "diff", "--no-index", "--diff-algorithm=minimal", leftPath, rightPath)
+	cmd := exec.Command("git", "diff", "--no-index", "--diff-algorithm=minimal", "-U999999", leftPath, rightPath)
 	var out bytes.Buffer
 	cmd.Stdout = &out
 	_ = cmd.Run()
