@@ -340,18 +340,21 @@ function jumpToChange(leftPanel, rightPanel, direction) {
   }
   if (changes.length === 0) return;
 
-  const panelRect = rightPanel.getBoundingClientRect();
-  let current = -1;
-  for (let i = 0; i < changes.length; i++) {
-    const row = rightRows[changes[i]];
-    if (row.getBoundingClientRect().top - panelRect.top > -20) { current = i; break; }
+  let current = leftPanel._hunkIdx;
+  if (current == null || current < 0 || current >= changes.length) {
+    const panelRect = rightPanel.getBoundingClientRect();
+    current = -1;
+    for (let i = 0; i < changes.length; i++) {
+      if (rightRows[changes[i]].getBoundingClientRect().top - panelRect.top > -20) { current = i; break; }
+    }
+    if (current === -1) current = 0;
   }
-  if (current === -1) current = changes.length - 1;
 
   const targetIdx = (current + direction + changes.length) % changes.length;
-  const targetRow = rightRows[changes[targetIdx]];
+  leftPanel._hunkIdx = targetIdx;
 
-  const rowRelativeTop = targetRow.getBoundingClientRect().top - panelRect.top;
+  const targetRow = rightRows[changes[targetIdx]];
+  const rowRelativeTop = targetRow.getBoundingClientRect().top - rightPanel.getBoundingClientRect().top;
   const scrollTarget = rightPanel.scrollTop + rowRelativeTop - 60;
 
   leftPanel.scrollTop = scrollTarget;
