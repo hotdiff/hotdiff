@@ -288,10 +288,10 @@ function renderFileContent(area, tab) {
 }
 
 function setupDiffHeader(container) {
-  const header = container.querySelector('.diff-file-header');
+  const summary = container.querySelector('.diff-summary');
   const leftPanel = container.querySelector('.left-panel');
   const rightPanel = container.querySelector('.right-panel');
-  if (!header || !leftPanel || !rightPanel) return;
+  if (!summary || !leftPanel || !rightPanel) return;
 
   const btnGroup = document.createElement('div');
   btnGroup.className = 'diff-header-actions';
@@ -320,7 +320,7 @@ function setupDiffHeader(container) {
   btnGroup.appendChild(prevBtn);
   btnGroup.appendChild(nextBtn);
   btnGroup.appendChild(collapseBtn);
-  header.appendChild(btnGroup);
+  summary.appendChild(btnGroup);
 }
 
 function jumpToChange(leftPanel, rightPanel, direction) {

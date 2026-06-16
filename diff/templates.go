@@ -44,10 +44,6 @@ func unifiedToSplit(lines []RawDiffLine) []SplitLine {
 		line := lines[i]
 
 		if line.Type == '@' {
-			split = append(split, SplitLine{
-				Type:        SplitSection,
-				SectionText: line.Content,
-			})
 			continue
 		}
 
@@ -126,13 +122,13 @@ func renderFileDiff(leftPath, rightPath string) (string, error) {
 		return "<div class=\"empty-diff\">Files are identical</div>", nil
 	}
 
-	shortLeft := filepath.Base(leftPath)
-	shortRight := filepath.Base(rightPath)
+	fullLeft := leftPath
+	fullRight := rightPath
 	if leftPath == "" {
-		shortLeft = ""
+		fullLeft = "[new]"
 	}
 	if rightPath == "" {
-		shortRight = ""
+		fullRight = "[deleted]"
 	}
 
 	splitLines := unifiedToSplit(diffFile.Lines)
@@ -163,8 +159,8 @@ func renderFileDiff(leftPath, rightPath string) (string, error) {
 		AddCount  int
 		DelCount  int
 	}{
-		OldName:  shortLeft,
-		NewName:  shortRight,
+		OldName:  fullLeft,
+		NewName:  fullRight,
 		Lines:    splitLines,
 		AddCount: addCount,
 		DelCount: delCount,

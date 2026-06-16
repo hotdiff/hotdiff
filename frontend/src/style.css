@@ -381,21 +381,66 @@ body {
 }
 
 .diff-file-header {
-  padding: 10px 16px;
-  background: #181825;
-  border-bottom: 1px solid #313244;
-  font-size: 13px;
-  font-weight: 600;
-  color: #cdd6f4;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  padding: 6px 0;
+  background: #181825;
+  border-bottom: 1px solid #313244;
+  font-size: 12px;
+  font-family: "SF Mono", "Fira Code", monospace;
+  color: #cdd6f4;
+}
+
+.diff-file-header .old-label {
+  flex: 1;
+  padding: 0 16px;
+  color: #f38ba8;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: left;
+}
+
+.diff-file-header .new-label {
+  flex: 1;
+  padding: 0 16px;
+  color: #a6e3a1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: left;
+}
+
+.header-sep {
+  flex-shrink: 0;
+  width: 48px;
+  text-align: center;
+  color: #585b70;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.diff-summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 16px;
+  background: #181825;
+  border-bottom: 1px solid #252536;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.summary-stats {
+  display: flex;
+  gap: 12px;
 }
 
 .diff-header-actions {
   display: flex;
   gap: 4px;
   flex-shrink: 0;
+  margin-left: auto;
 }
 
 .diff-nav-btn {
@@ -552,22 +597,7 @@ body {
   background: #cba6f7;
 }
 
-.diff-file-header .old-label { color: #f38ba8; }
-.diff-file-header .new-label { color: #a6e3a1; }
-.diff-file-header .vs { color: #585b70; }
-
-.diff-summary {
-  display: flex;
-  gap: 16px;
-  padding: 6px 16px;
-  background: #181825;
-  border-bottom: 1px solid #313244;
-  font-size: 12px;
-  font-weight: 600;
-}
-
 .add-summary { color: #a6e3a1; }
-
 .del-summary { color: #f38ba8; }
 
 .left-panel .del-code .lines-code {
