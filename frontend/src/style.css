@@ -34,6 +34,8 @@ body {
 .tab-content-area {
   flex: 1;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .result-view {
@@ -567,24 +569,21 @@ body {
 
 .diff-split-wrapper {
   display: flex;
-  height: 100%;
+  flex: 1;
+  overflow: auto;
+  min-height: 0;
+  padding-bottom: 40vh;
 }
 
 .diff-panel {
   flex: 1;
-  overflow: auto;
+  overflow: hidden;
   min-width: 0;
 }
 
 .diff-panel .diff-table {
   width: 100%;
   table-layout: fixed;
-}
-
-.diff-panel::after {
-  content: '';
-  display: block;
-  height: 40vh;
 }
 
 .diff-divider {

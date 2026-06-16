@@ -282,7 +282,7 @@ function renderFileContent(area, tab) {
     return;
   }
   area.innerHTML = tab.content || '<div class="error-message">暂无内容</div>';
-  syncSplitScroll(area);
+  equalizePanelHeights(area);
   setupDiffHeader(area);
   syncRowHeights(area);
 }
@@ -324,9 +324,10 @@ function setupDiffHeader(container) {
 }
 
 function jumpToChange(leftPanel, rightPanel, direction) {
+  const wrapper = leftPanel.closest('.diff-split-wrapper');
   const leftTable = leftPanel.querySelector('table');
   const rightTable = rightPanel.querySelector('table');
-  if (!leftTable || !rightTable) return;
+  if (!wrapper || !leftTable || !rightTable) return;
 
   const leftRows = leftTable.querySelectorAll('tr:not(.collapse-placeholder)');
   const rightRows = rightTable.querySelectorAll('tr:not(.collapse-placeholder)');
@@ -340,25 +341,22 @@ function jumpToChange(leftPanel, rightPanel, direction) {
   }
   if (changes.length === 0) return;
 
-  let current = leftPanel._hunkIdx;
+  let current = wrapper._hunkIdx;
   if (current == null || current < 0 || current >= changes.length) {
-    const panelRect = rightPanel.getBoundingClientRect();
+    const wrapRect = wrapper.getBoundingClientRect();
     current = -1;
     for (let i = 0; i < changes.length; i++) {
-      if (rightRows[changes[i]].getBoundingClientRect().top - panelRect.top > -20) { current = i; break; }
+      if (rightRows[changes[i]].getBoundingClientRect().top - wrapRect.top > -20) { current = i; break; }
     }
     if (current === -1) current = 0;
   }
 
   const targetIdx = (current + direction + changes.length) % changes.length;
-  leftPanel._hunkIdx = targetIdx;
+  wrapper._hunkIdx = targetIdx;
 
   const targetRow = rightRows[changes[targetIdx]];
-  const rowRelativeTop = targetRow.getBoundingClientRect().top - rightPanel.getBoundingClientRect().top;
-  const scrollTarget = rightPanel.scrollTop + rowRelativeTop - 60;
-
-  leftPanel.scrollTop = scrollTarget;
-  rightPanel.scrollTop = scrollTarget;
+  const rowRelativeTop = targetRow.getBoundingClientRect().top - wrapper.getBoundingClientRect().top;
+  wrapper.scrollTop = wrapper.scrollTop + rowRelativeTop - 60;
 
   targetRow.style.transition = 'background 0.15s';
   targetRow.style.background = '#45475a';
@@ -488,27 +486,25 @@ function applyCollapse(leftPanel, rightPanel, collapsed) {
   }
 
   syncRowHeightsForPanels(leftPanel, rightPanel);
+  equalizePanelHeightsForPanels(leftPanel, rightPanel);
 }
 
-function syncSplitScroll(container) {
+function equalizePanelHeights(container) {
   const left = container.querySelector('.left-panel');
   const right = container.querySelector('.right-panel');
-  if (!left || !right) return;
+  if (left && right) equalizePanelHeightsForPanels(left, right);
+}
 
-  left.addEventListener('scroll', () => {
-    if (Math.abs(right.scrollTop - left.scrollTop) > 1) {
-      right.scrollTop = left.scrollTop;
-    }
-    if (Math.abs(right.scrollLeft - left.scrollLeft) > 0) {
-      right.scrollLeft = left.scrollLeft;
-    }
-  });
-  right.addEventListener('scroll', () => {
-    if (Math.abs(left.scrollTop - right.scrollTop) > 1) {
-      left.scrollTop = right.scrollTop;
-    }
-    if (Math.abs(left.scrollLeft - right.scrollLeft) > 0) {
-      left.scrollLeft = right.scrollLeft;
+function equalizePanelHeightsForPanels(leftPanel, rightPanel) {
+  leftPanel.style.height = '';
+  rightPanel.style.height = '';
+  requestAnimationFrame(() => {
+    const lh = leftPanel.scrollHeight;
+    const rh = rightPanel.scrollHeight;
+    const maxH = Math.max(lh, rh);
+    if (maxH > 0) {
+      leftPanel.style.height = maxH + 'px';
+      rightPanel.style.height = maxH + 'px';
     }
   });
 }
