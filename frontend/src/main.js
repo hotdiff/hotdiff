@@ -284,6 +284,7 @@ function renderFileContent(area, tab) {
   area.innerHTML = tab.content || '<div class="error-message">暂无内容</div>';
   syncSplitScroll(area);
   setupDiffHeader(area);
+  syncRowHeights(area);
 }
 
 function setupDiffHeader(container) {
@@ -369,6 +370,47 @@ function isChanged(leftRow, rightRow) {
          rightRow.classList.contains('del-code') || rightRow.classList.contains('add-code');
 }
 
+function syncRowHeights(container) {
+  const left = container.querySelector('.left-panel');
+  const right = container.querySelector('.right-panel');
+  if (left && right) syncRowHeightsForPanels(left, right);
+}
+
+function syncRowHeightsForPanels(leftPanel, rightPanel) {
+  const leftTable = leftPanel.querySelector('table');
+  const rightTable = rightPanel.querySelector('table');
+  if (!leftTable || !rightTable) return;
+
+  const leftRows = leftTable.querySelectorAll('tr:not(.collapse-placeholder)');
+  const rightRows = rightTable.querySelectorAll('tr:not(.collapse-placeholder)');
+  const len = Math.min(leftRows.length, rightRows.length);
+
+  for (let i = 0; i < len; i++) {
+    leftRows[i].style.height = '';
+    rightRows[i].style.height = '';
+  }
+
+  const heights = [];
+  for (let i = 0; i < len; i++) {
+    const lVis = leftRows[i].style.display !== 'none';
+    const rVis = rightRows[i].style.display !== 'none';
+    heights.push({
+      lh: lVis ? leftRows[i].getBoundingClientRect().height : 0,
+      rh: rVis ? rightRows[i].getBoundingClientRect().height : 0,
+    });
+  }
+
+  for (let i = 0; i < len; i++) {
+    const maxH = Math.max(heights[i].lh, heights[i].rh);
+    if (maxH > 0 && leftRows[i].style.display !== 'none') {
+      leftRows[i].style.height = maxH + 'px';
+    }
+    if (maxH > 0 && rightRows[i].style.display !== 'none') {
+      rightRows[i].style.height = maxH + 'px';
+    }
+  }
+}
+
 const COLLAPSE_CONTEXT = 3;
 
 function applyCollapse(leftPanel, rightPanel, collapsed) {
@@ -441,6 +483,8 @@ function applyCollapse(leftPanel, rightPanel, collapsed) {
       i++;
     }
   }
+
+  syncRowHeightsForPanels(leftPanel, rightPanel);
 }
 
 function syncSplitScroll(container) {
