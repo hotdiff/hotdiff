@@ -282,6 +282,29 @@ function renderFileContent(area, tab) {
     return;
   }
   area.innerHTML = tab.content || '<div class="error-message">暂无内容</div>';
+  syncSplitScroll(area);
+}
+
+function syncSplitScroll(container) {
+  const left = container.querySelector('.left-panel');
+  const right = container.querySelector('.right-panel');
+  if (!left || !right) return;
+
+  let syncing = false;
+  left.addEventListener('scroll', () => {
+    if (syncing) return;
+    syncing = true;
+    right.scrollTop = left.scrollTop;
+    right.scrollLeft = left.scrollLeft;
+    syncing = false;
+  });
+  right.addEventListener('scroll', () => {
+    if (syncing) return;
+    syncing = true;
+    left.scrollTop = right.scrollTop;
+    left.scrollLeft = right.scrollLeft;
+    syncing = false;
+  });
 }
 
 async function loadFileTab(tab) {
