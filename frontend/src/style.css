@@ -8,9 +8,6 @@ body {
   margin: 0;
 }
 
-#app {
-}
-
 * {
   box-sizing: border-box;
 }
@@ -625,6 +622,8 @@ body {
 .placeholder-cell {
   font-family: inherit;
 }
+
+.empty-diff {
   padding: 40px;
   text-align: center;
   color: #6c7086;
