@@ -8,6 +8,10 @@
     <span class="new-label">{{if $newName}}{{$newName}}{{else}}[deleted]{{end}}</span>
   </span>
 </div>
+<div class="diff-summary">
+  <span class="add-summary">+{{.AddCount}}</span>
+  <span class="del-summary">−{{.DelCount}}</span>
+</div>
 <div class="diff-split-wrapper">
   <div class="diff-panel left-panel">
     <table class="diff-table split">

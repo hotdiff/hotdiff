@@ -137,6 +137,19 @@ func renderFileDiff(leftPath, rightPath string) (string, error) {
 
 	splitLines := unifiedToSplit(diffFile.Lines)
 
+	var addCount, delCount int
+	for _, sl := range splitLines {
+		switch sl.Type {
+		case SplitAdd:
+			addCount++
+		case SplitDel:
+			delCount++
+		case SplitChanged:
+			addCount++
+			delCount++
+		}
+	}
+
 	tmpl := template.New("diff_split.tmpl").Funcs(diffFuncs)
 	tmpl, err = tmpl.ParseFS(templateFS, "templates/diff_split.tmpl")
 	if err != nil {
@@ -144,13 +157,17 @@ func renderFileDiff(leftPath, rightPath string) (string, error) {
 	}
 
 	data := struct {
-		OldName string
-		NewName string
-		Lines   []SplitLine
+		OldName   string
+		NewName   string
+		Lines     []SplitLine
+		AddCount  int
+		DelCount  int
 	}{
-		OldName: shortLeft,
-		NewName: shortRight,
-		Lines:   splitLines,
+		OldName:  shortLeft,
+		NewName:  shortRight,
+		Lines:    splitLines,
+		AddCount: addCount,
+		DelCount: delCount,
 	}
 
 	var buf strings.Builder

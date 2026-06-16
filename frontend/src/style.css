@@ -529,6 +529,20 @@ body {
 .diff-file-header .new-label { color: #a6e3a1; }
 .diff-file-header .vs { color: #585b70; }
 
+.diff-summary {
+  display: flex;
+  gap: 16px;
+  padding: 6px 16px;
+  background: #181825;
+  border-bottom: 1px solid #313244;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.add-summary { color: #a6e3a1; }
+
+.del-summary { color: #f38ba8; }
+
 .left-panel .del-code .lines-code {
   background: #3a1e1e;
 }
