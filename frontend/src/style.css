@@ -392,6 +392,33 @@ body {
   justify-content: space-between;
 }
 
+.diff-header-actions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.diff-nav-btn {
+  background: transparent;
+  border: 1px solid #45475a;
+  color: #6c7086;
+  font-size: 11px;
+  width: 26px;
+  height: 26px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  line-height: 1;
+  transition: all 0.15s;
+}
+.diff-nav-btn:hover {
+  border-color: #cba6f7;
+  color: #cba6f7;
+}
+
 .collapse-toggle-btn {
   background: transparent;
   border: 1px solid #45475a;

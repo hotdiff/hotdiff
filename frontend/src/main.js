@@ -283,25 +283,93 @@ function renderFileContent(area, tab) {
   }
   area.innerHTML = tab.content || '<div class="error-message">暂无内容</div>';
   syncSplitScroll(area);
-  setupCollapseToggle(area);
+  setupDiffHeader(area);
 }
 
-function setupCollapseToggle(container) {
+function setupDiffHeader(container) {
   const header = container.querySelector('.diff-file-header');
   const leftPanel = container.querySelector('.left-panel');
   const rightPanel = container.querySelector('.right-panel');
   if (!header || !leftPanel || !rightPanel) return;
 
-  const btn = document.createElement('button');
-  btn.className = 'collapse-toggle-btn';
-  btn.title = '折叠未变化区域';
-  btn.innerHTML = '&plusmn;';
-  btn.addEventListener('click', () => {
-    btn.classList.toggle('active');
-    applyCollapse(leftPanel, rightPanel, btn.classList.contains('active'));
+  const btnGroup = document.createElement('div');
+  btnGroup.className = 'diff-header-actions';
+
+  const prevBtn = document.createElement('button');
+  prevBtn.className = 'diff-nav-btn';
+  prevBtn.title = '上一个差异';
+  prevBtn.innerHTML = '&#9650;';
+  prevBtn.addEventListener('click', () => jumpToChange(leftPanel, rightPanel, -1));
+
+  const nextBtn = document.createElement('button');
+  nextBtn.className = 'diff-nav-btn';
+  nextBtn.title = '下一个差异';
+  nextBtn.innerHTML = '&#9660;';
+  nextBtn.addEventListener('click', () => jumpToChange(leftPanel, rightPanel, 1));
+
+  const collapseBtn = document.createElement('button');
+  collapseBtn.className = 'collapse-toggle-btn';
+  collapseBtn.title = '折叠未变化区域';
+  collapseBtn.innerHTML = '&plusmn;';
+  collapseBtn.addEventListener('click', () => {
+    collapseBtn.classList.toggle('active');
+    applyCollapse(leftPanel, rightPanel, collapseBtn.classList.contains('active'));
   });
-  header.appendChild(btn);
+
+  btnGroup.appendChild(prevBtn);
+  btnGroup.appendChild(nextBtn);
+  btnGroup.appendChild(collapseBtn);
+  header.appendChild(btnGroup);
 }
+
+function jumpToChange(leftPanel, rightPanel, direction) {
+  const leftTable = leftPanel.querySelector('table');
+  const rightTable = rightPanel.querySelector('table');
+  if (!leftTable || !rightTable) return;
+
+  const leftRows = leftTable.querySelectorAll('tr:not(.collapse-placeholder)');
+  const rightRows = rightTable.querySelectorAll('tr:not(.collapse-placeholder)');
+  const len = Math.min(leftRows.length, rightRows.length);
+
+  const changes = [];
+  for (let i = 0; i < len; i++) {
+    if (isChanged(leftRows[i], rightRows[i]) && leftRows[i].style.display !== 'none') {
+      changes.push(i);
+    }
+  }
+  if (changes.length === 0) return;
+
+  const panelRect = rightPanel.getBoundingClientRect();
+  let current = -1;
+  for (let i = 0; i < changes.length; i++) {
+    const row = rightRows[changes[i]];
+    if (row.getBoundingClientRect().top - panelRect.top > -20) { current = i; break; }
+  }
+  if (current === -1) current = changes.length - 1;
+
+  const targetIdx = (current + direction + changes.length) % changes.length;
+  const targetRow = rightRows[changes[targetIdx]];
+
+  const rowRelativeTop = targetRow.getBoundingClientRect().top - panelRect.top;
+  const scrollTarget = rightPanel.scrollTop + rowRelativeTop - 60;
+
+  leftPanel.scrollTop = scrollTarget;
+  rightPanel.scrollTop = scrollTarget;
+
+  targetRow.style.transition = 'background 0.15s';
+  targetRow.style.background = '#45475a';
+  setTimeout(() => {
+    targetRow.style.transition = 'background 0.5s';
+    targetRow.style.background = '';
+  }, 800);
+}
+
+function isChanged(leftRow, rightRow) {
+  return leftRow.classList.contains('del-code') || leftRow.classList.contains('add-code') ||
+         rightRow.classList.contains('del-code') || rightRow.classList.contains('add-code');
+}
+
+const COLLAPSE_CONTEXT = 3;
 
 function applyCollapse(leftPanel, rightPanel, collapsed) {
   const leftTable = leftPanel.querySelector('table');
@@ -315,19 +383,44 @@ function applyCollapse(leftPanel, rightPanel, collapsed) {
   const rightRows = rightTable.querySelectorAll('tr:not(.collapse-placeholder)');
   const len = Math.min(leftRows.length, rightRows.length);
 
-  if (!collapsed) {
-    for (let i = 0; i < len; i++) {
-      leftRows[i].style.display = '';
-      rightRows[i].style.display = '';
+  for (let i = 0; i < len; i++) {
+    leftRows[i].style.display = '';
+    rightRows[i].style.display = '';
+  }
+
+  if (!collapsed) return;
+
+  const keep = new Array(len).fill(false);
+  let inBlock = false;
+  let blockStart = -1;
+
+  for (let i = 0; i < len; i++) {
+    if (isChanged(leftRows[i], rightRows[i]) && leftRows[i].style.display !== 'none') {
+      if (!inBlock) { inBlock = true; blockStart = i; }
+    } else {
+      if (inBlock) {
+        for (let j = Math.max(0, blockStart - COLLAPSE_CONTEXT); j < Math.min(len, i + COLLAPSE_CONTEXT); j++) {
+          keep[j] = true;
+        }
+        inBlock = false;
+      }
     }
-    return;
+  }
+  if (inBlock) {
+    for (let j = Math.max(0, blockStart - COLLAPSE_CONTEXT); j < len; j++) {
+      keep[j] = true;
+    }
+  }
+
+  for (let i = 0; i < len; i++) {
+    if (leftRows[i].classList.contains('tag-code')) keep[i] = true;
   }
 
   let i = 0;
   while (i < len) {
-    if (isUnchanged(leftRows[i], rightRows[i])) {
+    if (!keep[i]) {
       const start = i;
-      while (i < len && isUnchanged(leftRows[i], rightRows[i])) i++;
+      while (i < len && !keep[i]) i++;
       const count = i - start;
 
       for (let j = start; j < i; j++) {
@@ -350,29 +443,26 @@ function applyCollapse(leftPanel, rightPanel, collapsed) {
   }
 }
 
-function isUnchanged(leftRow, rightRow) {
-  return leftRow.classList.contains('same-code') && rightRow.classList.contains('same-code');
-}
-
 function syncSplitScroll(container) {
   const left = container.querySelector('.left-panel');
   const right = container.querySelector('.right-panel');
   if (!left || !right) return;
 
-  let syncing = false;
   left.addEventListener('scroll', () => {
-    if (syncing) return;
-    syncing = true;
-    right.scrollTop = left.scrollTop;
-    right.scrollLeft = left.scrollLeft;
-    syncing = false;
+    if (Math.abs(right.scrollTop - left.scrollTop) > 1) {
+      right.scrollTop = left.scrollTop;
+    }
+    if (Math.abs(right.scrollLeft - left.scrollLeft) > 0) {
+      right.scrollLeft = left.scrollLeft;
+    }
   });
   right.addEventListener('scroll', () => {
-    if (syncing) return;
-    syncing = true;
-    left.scrollTop = right.scrollTop;
-    left.scrollLeft = right.scrollLeft;
-    syncing = false;
+    if (Math.abs(left.scrollTop - right.scrollTop) > 1) {
+      left.scrollTop = right.scrollTop;
+    }
+    if (Math.abs(left.scrollLeft - right.scrollLeft) > 0) {
+      left.scrollLeft = right.scrollLeft;
+    }
   });
 }
 
