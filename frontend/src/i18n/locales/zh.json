@@ -1,12 +1,12 @@
 {
   "app": {
-    "title": "HOT DIFF",
+    "title": "Hot Diff",
     "comparing": "比较中...",
     "result": "比较结果",
     "home": "首页"
   },
   "window": {
-    "title": "HOT DIFF - 文件比较工具"
+    "title": "Hot Diff - 文件比较工具"
   },
   "home": {
     "chooseLeft": "选择左侧文件或目录...",

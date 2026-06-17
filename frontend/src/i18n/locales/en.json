@@ -1,12 +1,12 @@
 {
   "app": {
-    "title": "HOT DIFF",
+    "title": "Hot Diff",
     "comparing": "Comparing...",
     "result": "Comparison Result",
     "home": "Home"
   },
   "window": {
-    "title": "HOT DIFF - File Comparison Tool"
+    "title": "Hot Diff - File Comparison Tool"
   },
   "home": {
     "chooseLeft": "Choose left file or directory...",

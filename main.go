@@ -19,7 +19,7 @@ func main() {
 	appMenu.Append(menu.AppMenu())
 
 	err := wails.Run(&options.App{
-		Title:     "HOT DIFF",
+		Title:     "Hot Diff",
 		Width:     1400,
 		Height:    900,
 		MinWidth:  1000,
