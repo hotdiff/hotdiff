@@ -2,6 +2,7 @@ build/bin
 build/appicon.iconset
 build/darwin/appicon.icns
 build/windows/installer/tmp/
+dist
 frontend/dist
 frontend/node_modules
 .DS_Store
