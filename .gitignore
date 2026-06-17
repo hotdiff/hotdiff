@@ -1,4 +1,6 @@
 build/bin
+build/darwin/appicon.icns
+build/windows/installer/tmp/
 frontend/dist
 frontend/node_modules
 .DS_Store
