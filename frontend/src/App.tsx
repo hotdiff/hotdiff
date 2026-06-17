@@ -38,9 +38,9 @@ export default function App() {
         setActiveTab(existing.id);
         return prev;
       }
+      setActiveTab(tab.id);
       return [...prev, tab];
     });
-    setActiveTab(tab.id);
   }, []);
 
   const closeTab = useCallback((id: string) => {

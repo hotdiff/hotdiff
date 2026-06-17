@@ -8,6 +8,17 @@ The structure is:
 * darwin - macOS specific files
 * windows - Windows specific files
 
+## App Icon Design Specifications
+
+The `appicon.png` file in the build directory is used to generate application icons for all platforms. `wails build` handles the conversion automatically.
+
+| Property | Value | Description |
+|----------|-------|-------------|
+| Canvas size | 1024 × 1024 px | Base canvas size for design and export. |
+| Background | Transparent | Must be transparent so the system can correctly render shadows and lighting effects (e.g. in the macOS Dock). |
+| Core icon size | 824 × 824 px | Size of the icon artwork. Placed on a 1024 px canvas, this leaves a 100 px margin (gutter) on each side. |
+| Corner radius | 185.4 px | Key value for achieving the system-standard squircle appearance. |
+
 ## Mac
 
 The `darwin` directory holds files specific to Mac builds.
@@ -19,32 +30,6 @@ The directory contains the following files:
 
 - `Info.plist` - the main plist file used for Mac builds. It is used when building using `wails build`.
 - `Info.dev.plist` - same as the main plist file but used when building using `wails dev`.
-
-### Generating the macOS App Icon
-
-To generate a macOS `.icns` icon from `appicon.png`:
-
-```bash
-# Create the iconset directory
-mkdir -p appicon.iconset
-
-# Generate all required sizes with sips
-sips -z 16 16     appicon.png --out appicon.iconset/icon_16x16.png
-sips -z 32 32     appicon.png --out appicon.iconset/icon_16x16@2x.png
-sips -z 32 32     appicon.png --out appicon.iconset/icon_32x32.png
-sips -z 64 64     appicon.png --out appicon.iconset/icon_32x32@2x.png
-sips -z 128 128   appicon.png --out appicon.iconset/icon_128x128.png
-sips -z 256 256   appicon.png --out appicon.iconset/icon_128x128@2x.png
-sips -z 256 256   appicon.png --out appicon.iconset/icon_256x256.png
-sips -z 512 512   appicon.png --out appicon.iconset/icon_256x256@2x.png
-sips -z 512 512   appicon.png --out appicon.iconset/icon_512x512.png
-sips -z 1024 1024 appicon.png --out appicon.iconset/icon_512x512@2x.png
-
-# Convert the iconset to .icns
-iconutil -c icns appicon.iconset -o appicon.icns
-```
-
-The resulting `appicon.icns` can be placed in the `darwin` directory for use by Wails.
 
 ## Windows
 
