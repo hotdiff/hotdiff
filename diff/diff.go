@@ -24,12 +24,7 @@ func CompareDirs(leftDir, rightDir string, progressCh chan<- CompareProgress) {
 	}
 
 	if leftIsFile && rightIsFile {
-		leftName := filepath.Base(leftDir)
-		rightName := filepath.Base(rightDir)
-		commonName := leftName
-		if leftName != rightName {
-			commonName = leftName + " \u2194 " + rightName
-		}
+		commonName := filepath.Base(leftDir)
 		leftFiles[commonName] = leftDir
 		rightFiles[commonName] = rightDir
 	} else {
@@ -82,6 +77,10 @@ func CompareDirs(leftDir, rightDir string, progressCh chan<- CompareProgress) {
 			Name:         filepath.Base(relPath),
 			LeftPath:     leftPath,
 			RightPath:    rightPath,
+		}
+
+		if rightPath != "" {
+			fr.RightName = filepath.Base(rightPath)
 		}
 
 		switch {

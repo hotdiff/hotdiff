@@ -13,6 +13,7 @@ const (
 type FileResult struct {
 	RelativePath string      `json:"relativePath"`
 	Name         string      `json:"name"`
+	RightName    string      `json:"rightName"`
 	LeftPath     string      `json:"leftPath"`
 	RightPath    string      `json:"rightPath"`
 	Status       FileStatus  `json:"status"`

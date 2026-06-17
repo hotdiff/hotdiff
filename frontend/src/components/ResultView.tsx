@@ -14,6 +14,7 @@ interface ResultViewProps {
 
 interface FlatRow {
   name: string;
+  rightName: string;
   path: string;
   depth: number;
   isDir: boolean;
@@ -37,6 +38,7 @@ function buildFileTree(files: FileResult[]) {
         const isDir = i < parts.length - 1 || f.isDir;
         existing = {
           name: parts[i],
+          rightName: f.rightName || '',
           path: parts.slice(0, i + 1).join('/'),
           depth: 0,
           isDir,
@@ -62,6 +64,7 @@ function flattenTree(nodes: any[], rows: FlatRow[], depth: number) {
   for (const node of sorted) {
     rows.push({
       name: node.name,
+      rightName: node.rightName,
       path: node.path,
       depth,
       isDir: node.isDir,
@@ -149,10 +152,13 @@ export default function ResultView({ tab, onOpenFileDiff }: ResultViewProps) {
   const handleOpenFile = useCallback((row: FlatRow) => {
     if (row.isDir) return;
     if (!row.leftPath && !row.rightPath) return;
+    const label = row.rightName && row.rightName !== row.name
+      ? `${row.name} \u2194 ${row.rightName}`
+      : row.name;
     const fileTab: TabData = {
       id: 'file_' + Date.now(),
       type: 'file',
-      label: row.name,
+      label,
       fileName: row.name,
       filePath: row.path,
       leftPath: row.leftPath,
@@ -294,7 +300,7 @@ export default function ResultView({ tab, onOpenFileDiff }: ResultViewProps) {
                 {row.isDir ? (
                   <><FolderOutlined style={{ fontSize: 12, flexShrink: 0 }} /><span>{row.name}</span></>
                 ) : (
-                  <><FileOutlined style={{ fontSize: 12, flexShrink: 0, opacity: 0.6 }} /><span>{row.name}</span></>
+                  <><FileOutlined style={{ fontSize: 12, flexShrink: 0, opacity: 0.6 }} /><span>{row.rightName || row.name}</span></>
                 )}
               </div>
             </div>

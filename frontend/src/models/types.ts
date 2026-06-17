@@ -9,6 +9,7 @@ export enum FileStatus {
 export interface FileResult {
   relativePath: string;
   name: string;
+  rightName: string;
   leftPath: string;
   rightPath: string;
   status: FileStatus;
