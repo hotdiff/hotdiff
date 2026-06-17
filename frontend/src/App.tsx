@@ -155,9 +155,12 @@ export default function App() {
             }}
             hideAdd
             tabBarExtraContent={
-              <Dropdown menu={langItems} trigger={['click']}>
-                <Button type="text" icon={<GlobalOutlined />} style={{ color: '#a6adc8', marginRight: 8 }} />
-              </Dropdown>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <Button type="text" icon={<HomeOutlined />} onClick={() => setActiveTab(HOME_TAB_ID)} style={{ color: '#a6adc8', marginRight: 8 }} />
+                <Dropdown menu={langItems} trigger={['click']}>
+                  <Button type="text" icon={<GlobalOutlined />} style={{ color: '#a6adc8', marginRight: 8 }} />
+                </Dropdown>
+              </div>
             }
             items={tabs.map(tab => ({
               key: tab.id,
