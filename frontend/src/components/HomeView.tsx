@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Button, Input, Space } from 'antd';
 import { FolderOutlined, FileOutlined } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import { SelectDirectory, SelectFile } from '../../wailsjs/go/main/App';
 
 interface HomeViewProps {
@@ -27,6 +28,7 @@ const iconBtnStyle: React.CSSProperties = {
 };
 
 export default function HomeView({ onCompare }: HomeViewProps) {
+  const { t } = useTranslation();
   const [leftPath, setLeftPath] = useState('');
   const [rightPath, setRightPath] = useState('');
 
@@ -59,7 +61,7 @@ export default function HomeView({ onCompare }: HomeViewProps) {
         color: '#cdd6f4',
         letterSpacing: '-0.5px',
       }}>
-        HOT DIFF
+        {t('app.title')}
       </h1>
 
       <div style={{
@@ -72,7 +74,7 @@ export default function HomeView({ onCompare }: HomeViewProps) {
       }}>
         <Input
           value={leftPath}
-          placeholder="选择左侧文件或目录..."
+          placeholder={t('home.chooseLeft')}
           allowClear
           onChange={e => { if (!e.target.value) setLeftPath(''); }}
           onClick={selectLeftDir}
@@ -91,7 +93,7 @@ export default function HomeView({ onCompare }: HomeViewProps) {
 
         <Input
           value={rightPath}
-          placeholder="选择右侧文件或目录..."
+          placeholder={t('home.chooseRight')}
           allowClear
           onChange={e => { if (!e.target.value) setRightPath(''); }}
           onClick={selectRightDir}
@@ -124,7 +126,7 @@ export default function HomeView({ onCompare }: HomeViewProps) {
           }}
           block
         >
-          Compare
+          {t('home.compare')}
         </Button>
       </div>
     </div>

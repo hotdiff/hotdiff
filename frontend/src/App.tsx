@@ -1,7 +1,10 @@
-import { useState, useCallback } from 'react';
-import { ConfigProvider, theme, Layout, Tabs } from 'antd';
-import { HomeOutlined } from '@ant-design/icons';
+import { useState, useCallback, useEffect } from 'react';
+import { ConfigProvider, theme, Layout, Tabs, Button, Dropdown } from 'antd';
+import { HomeOutlined, GlobalOutlined } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
+import './i18n';
 import { EventsOn } from '../wailsjs/runtime/runtime';
+import { WindowSetTitle } from '../wailsjs/runtime/runtime';
 import { StartCompare } from '../wailsjs/go/main/App';
 import type { TabData, CompareProgress, CompareSummary } from './models/types';
 import HomeView from './components/HomeView';
@@ -11,12 +14,17 @@ import DiffView from './components/DiffView';
 const { Content } = Layout;
 const HOME_TAB_ID = 'home';
 
-function createHomeTab(): TabData {
-  return { id: HOME_TAB_ID, type: 'home', label: 'Home' };
-}
-
 export default function App() {
-  const [tabs, setTabs] = useState<TabData[]>([createHomeTab()]);
+  const { t, i18n } = useTranslation();
+
+  useEffect(() => {
+    WindowSetTitle(t('window.title'));
+  }, [i18n.language, t]);
+  const [tabs, setTabs] = useState<TabData[]>([{
+    id: HOME_TAB_ID,
+    type: 'home' as const,
+    label: 'Home',
+  }]);
   const [activeTab, setActiveTab] = useState(HOME_TAB_ID);
 
   const updateTab = useCallback((id: string, updater: (tab: TabData) => TabData) => {
@@ -57,7 +65,7 @@ export default function App() {
     const resultTab: TabData = {
       id: resultTabId,
       type: 'result',
-      label: '比较中...',
+      label: t('app.comparing'),
       leftPath: left,
       rightPath: right,
       loading: true,
@@ -70,7 +78,7 @@ export default function App() {
           ...tab,
           error: progress.error,
           loading: false,
-          label: '比较结果',
+          label: t('app.result'),
         }));
         unlisten();
         return;
@@ -80,7 +88,7 @@ export default function App() {
           ...tab,
           result: progress.result as CompareSummary,
           loading: false,
-          label: '比较结果',
+          label: t('app.result'),
         }));
         unlisten();
         return;
@@ -92,7 +100,7 @@ export default function App() {
     });
 
     StartCompare(left, right);
-  }, [addTab, updateTab]);
+  }, [addTab, updateTab, t]);
 
   const onOpenFileDiff = useCallback((tabData: TabData) => {
     addTab(tabData);
@@ -109,6 +117,13 @@ export default function App() {
       default:
         return null;
     }
+  };
+
+  const langItems = {
+    items: [
+      { key: 'en', label: 'English', onClick: () => i18n.changeLanguage('en') },
+      { key: 'zh', label: '中文', onClick: () => i18n.changeLanguage('zh') },
+    ],
   };
 
   return (
@@ -139,12 +154,17 @@ export default function App() {
               }
             }}
             hideAdd
+            tabBarExtraContent={
+              <Dropdown menu={langItems} trigger={['click']}>
+                <Button type="text" icon={<GlobalOutlined />} style={{ color: '#a6adc8', marginRight: 8 }} />
+              </Dropdown>
+            }
             items={tabs.map(tab => ({
               key: tab.id,
               label: (
                 <span>
                   {tab.type === 'home' && <HomeOutlined style={{ marginRight: 6 }} />}
-                  {tab.label}
+                  {tab.type === 'home' ? t('app.home') : tab.label}
                 </span>
               ),
               closable: tab.type !== 'home',

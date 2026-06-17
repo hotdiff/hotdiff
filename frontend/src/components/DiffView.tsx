@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Typography, Spin, Alert, Empty } from 'antd';
 import { DiffEditor, loader } from '@monaco-editor/react';
 import * as monaco from 'monaco-editor';
+import { useTranslation } from 'react-i18next';
 import type { TabData } from '../models/types';
 import type { main, diff } from '../../wailsjs/go/models';
 import { GetDiffDetail } from '../../wailsjs/go/main/App';
@@ -43,8 +44,9 @@ function getCsvCellLabel(cellType: number, leftValue: string, rightValue: string
 }
 
 function CsvDiffTableView({ table, leftName, rightName }: { table: diff.CsvDiffTable; leftName: string; rightName: string }) {
+  const { t } = useTranslation();
   if (!table || (!table.Headers?.length && !table.Rows?.length)) {
-    return <Empty description="Files are identical" style={{ padding: 40 }} />;
+    return <Empty description={t('diff.error.identical')} style={{ padding: 40 }} />;
   }
 
   return (
@@ -58,11 +60,11 @@ function CsvDiffTableView({ table, leftName, rightName }: { table: diff.CsvDiffT
         fontFamily: 'monospace',
       }}>
         <Text style={{ flex: 1, color: '#f38ba8', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-          {leftName || '[deleted]'}
+          {leftName || t('diff.deleted')}
         </Text>
         <Text style={{ width: 40, textAlign: 'center', color: '#585b70' }}>⇔</Text>
         <Text style={{ flex: 1, color: '#a6e3a1', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', textAlign: 'right' }}>
-          {rightName || '[new]'}
+          {rightName || t('diff.new')}
         </Text>
       </div>
       <table style={{
@@ -122,6 +124,7 @@ function CsvDiffTableView({ table, leftName, rightName }: { table: diff.CsvDiffT
 }
 
 export default function DiffView({ tab }: DiffViewProps) {
+  const { t } = useTranslation();
   const [content, setContent] = useState<main.DiffDetailResult | null>(null);
   const [loading, setLoading] = useState(tab.loading !== false);
   const [error, setError] = useState<string | null>(null);
@@ -144,7 +147,7 @@ export default function DiffView({ tab }: DiffViewProps) {
   if (loading) {
     return (
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 60 }}>
-        <Spin tip="加载差异详情..." size="large">
+        <Spin tip={t('diff.loading')} size="large">
           <div style={{ height: 50 }} />
         </Spin>
       </div>
@@ -154,13 +157,13 @@ export default function DiffView({ tab }: DiffViewProps) {
   if (error) {
     return (
       <div style={{ padding: 40 }}>
-        <Alert type="error" message="加载出错" description={error} showIcon />
+        <Alert type="error" message={t('diff.error.title')} description={error} showIcon />
       </div>
     );
   }
 
   if (!content) {
-    return <Empty description="暂无内容" style={{ padding: 40 }} />;
+    return <Empty description={t('diff.error.empty')} style={{ padding: 40 }} />;
   }
 
   if (content.isCsv && content.csvTable) {
@@ -188,11 +191,11 @@ export default function DiffView({ tab }: DiffViewProps) {
         flexShrink: 0,
       }}>
         <Text style={{ flex: 1, color: '#f38ba8', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-          {content.oldName || tab.leftPath || '[deleted]'}
+          {content.oldName || tab.leftPath || t('diff.deleted')}
         </Text>
         <Text style={{ width: 40, textAlign: 'center', color: '#585b70', fontWeight: 700 }}>⇔</Text>
         <Text style={{ flex: 1, color: '#a6e3a1', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', textAlign: 'right' }}>
-          {content.newName || tab.rightPath || '[new]'}
+          {content.newName || tab.rightPath || t('diff.new')}
         </Text>
       </div>
       <div style={{ flex: 1, overflow: 'hidden' }}>
@@ -212,7 +215,7 @@ export default function DiffView({ tab }: DiffViewProps) {
           }}
           loading={
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
-              <Spin tip="加载编辑器..." />
+              <Spin tip={t('diff.loadingEditor')} />
             </div>
           }
         />

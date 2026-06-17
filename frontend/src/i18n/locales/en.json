@@ -1,0 +1,40 @@
+{
+  "app": {
+    "title": "HOT DIFF",
+    "comparing": "Comparing...",
+    "result": "Comparison Result",
+    "home": "Home"
+  },
+  "window": {
+    "title": "HOT DIFF - File Comparison Tool"
+  },
+  "home": {
+    "chooseLeft": "Choose left file or directory...",
+    "chooseRight": "Choose right file or directory...",
+    "compare": "Compare"
+  },
+  "result": {
+    "title": "Comparison Result",
+    "comparing": "Comparing...",
+    "status": "Status",
+    "error": {
+      "title": "Compare Error",
+      "empty": "No files"
+    }
+  },
+  "diff": {
+    "loading": "Loading diff...",
+    "loadingEditor": "Loading editor...",
+    "error": {
+      "title": "Load Error",
+      "empty": "No content",
+      "identical": "Files are identical",
+      "binary": "Binary file comparison is not supported"
+    },
+    "deleted": "[deleted]",
+    "new": "[new]"
+  },
+  "menu": {
+    "lang": "语言"
+  }
+}

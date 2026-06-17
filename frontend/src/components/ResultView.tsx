@@ -1,9 +1,7 @@
 import { useMemo, useState, useCallback } from 'react';
 import { Typography, Progress, Tag, Spin, Alert, Empty } from 'antd';
-import {
-  FileOutlined,
-  FolderOutlined,
-} from '@ant-design/icons';
+import { FileOutlined, FolderOutlined } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import type { TabData, FileResult, CompareSummary } from '../models/types';
 import { FileStatus } from '../models/types';
 
@@ -101,6 +99,8 @@ function getStatusColor(status: FileStatus): string {
 }
 
 export default function ResultView({ tab, onOpenFileDiff }: ResultViewProps) {
+  const { t } = useTranslation();
+
   const allRows = useMemo(() => {
     if (!tab.result?.files) return [] as FlatRow[];
     const tree = buildFileTree(tab.result.files);
@@ -166,7 +166,7 @@ export default function ResultView({ tab, onOpenFileDiff }: ResultViewProps) {
   if (tab.error) {
     return (
       <div style={{ padding: 40, textAlign: 'center' }}>
-        <Alert type="error" message="比较出错" description={tab.error} showIcon />
+        <Alert type="error" message={t('result.error.title')} description={tab.error} showIcon />
       </div>
     );
   }
@@ -175,10 +175,10 @@ export default function ResultView({ tab, onOpenFileDiff }: ResultViewProps) {
     return (
       <div style={{ padding: 40 }}>
         <div style={{ textAlign: 'center', marginBottom: 24 }}>
-          <Title level={3} style={{ color: '#cdd6f4' }}>比较结果</Title>
+          <Title level={3} style={{ color: '#cdd6f4' }}>{t('result.title')}</Title>
         </div>
         <div style={{ maxWidth: 400, margin: '0 auto' }}>
-          <Spin tip="正在比较..." size="large" style={{ display: 'block', marginBottom: 24 }}>
+          <Spin tip={t('result.comparing')} size="large" style={{ display: 'block', marginBottom: 24 }}>
             <div style={{ height: 50 }} />
           </Spin>
           {tab.progress && (
@@ -203,7 +203,6 @@ export default function ResultView({ tab, onOpenFileDiff }: ResultViewProps) {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', padding: '0 16px' }}>
-      {/* Header with title + stats */}
       <div style={{
         display: 'flex',
         justifyContent: 'space-between',
@@ -212,7 +211,7 @@ export default function ResultView({ tab, onOpenFileDiff }: ResultViewProps) {
         borderBottom: '1px solid #313244',
         flexShrink: 0,
       }}>
-        <Title level={4} style={{ color: '#cdd6f4', margin: 0 }}>比较结果</Title>
+        <Title level={4} style={{ color: '#cdd6f4', margin: 0 }}>{t('result.title')}</Title>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
           <Tag color="green" style={{ margin: 0 }}>= {result.sameCount}</Tag>
           <Tag color="red" style={{ margin: 0 }}>≠ {result.differentCount}</Tag>
@@ -222,7 +221,6 @@ export default function ResultView({ tab, onOpenFileDiff }: ResultViewProps) {
         </div>
       </div>
 
-      {/* Three-column header */}
       <div style={{
         display: 'grid',
         gridTemplateColumns: '1fr 48px 1fr',
@@ -231,45 +229,30 @@ export default function ResultView({ tab, onOpenFileDiff }: ResultViewProps) {
         flexShrink: 0,
       }}>
         <Text style={{
-          padding: '8px 12px',
-          fontSize: 12,
-          fontWeight: 700,
-          color: '#a6adc8',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          whiteSpace: 'nowrap',
+          padding: '8px 12px', fontSize: 12, fontWeight: 700,
+          color: '#a6adc8', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
         }}>
           {result.leftDir}
         </Text>
         <Text style={{
-          padding: '8px 0',
-          fontSize: 12,
-          fontWeight: 700,
-          color: '#a6adc8',
-          textAlign: 'center',
+          padding: '8px 0', fontSize: 12, fontWeight: 700,
+          color: '#a6adc8', textAlign: 'center',
         }}>
-          状态
+          {t('result.status')}
         </Text>
         <Text style={{
-          padding: '8px 12px',
-          fontSize: 12,
-          fontWeight: 700,
-          color: '#a6adc8',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          whiteSpace: 'nowrap',
+          padding: '8px 12px', fontSize: 12, fontWeight: 700,
+          color: '#a6adc8', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
         }}>
           {result.rightDir}
         </Text>
       </div>
 
-      {/* Scrollable file list */}
       <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden' }}>
         {visibleRows.length > 0 ? (
           visibleRows.map((row, idx) => (
             <div
               key={row.path + ':' + idx}
-              className={`diff-row ${row.isDir ? 'dir-row' : 'file-row'}`}
               style={{
                 display: 'grid',
                 gridTemplateColumns: '1fr 48px 1fr',
@@ -280,83 +263,49 @@ export default function ResultView({ tab, onOpenFileDiff }: ResultViewProps) {
               }}
               onMouseEnter={e => (e.currentTarget.style.background = '#313244')}
               onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
-              onClick={() => {
-                if (row.isDir) toggleDir(row.path);
-              }}
-              onDoubleClick={() => {
-                if (!row.isDir) handleDoubleClick(row);
-              }}
+              onClick={() => { if (row.isDir) toggleDir(row.path); }}
+              onDoubleClick={() => { if (!row.isDir) handleDoubleClick(row); }}
             >
-              {/* Left cell */}
               <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                padding: '3px 12px',
+                display: 'flex', alignItems: 'center', padding: '3px 12px',
                 paddingLeft: row.depth * 16 + 12,
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-                gap: 4,
-                fontWeight: row.isDir ? 600 : undefined,
+                overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                gap: 4, fontWeight: row.isDir ? 600 : undefined,
                 color: row.isDir ? '#89b4fa' : '#cdd6f4',
               }}>
                 {row.isDir ? (
-                  <>
-                    <FolderOutlined style={{ fontSize: 12, flexShrink: 0 }} />
-                    <span>{row.name}</span>
-                  </>
+                  <><FolderOutlined style={{ fontSize: 12, flexShrink: 0 }} /><span>{row.name}</span></>
                 ) : (
-                  <>
-                    <FileOutlined style={{ fontSize: 12, flexShrink: 0, opacity: 0.6 }} />
-                    <span>{row.name}</span>
-                  </>
+                  <><FileOutlined style={{ fontSize: 12, flexShrink: 0, opacity: 0.6 }} /><span>{row.name}</span></>
                 )}
               </div>
 
-              {/* Center cell - status */}
               <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                padding: '3px 0',
-                fontSize: 16,
-                fontWeight: 700,
-                borderLeft: '1px solid #313244',
-                borderRight: '1px solid #313244',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                padding: '3px 0', fontSize: 16, fontWeight: 700,
+                borderLeft: '1px solid #313244', borderRight: '1px solid #313244',
                 color: getStatusColor(row.status),
               }}>
                 {!row.isDir && getStatusChar(row.status)}
               </div>
 
-              {/* Right cell */}
               <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                padding: '3px 12px',
+                display: 'flex', alignItems: 'center', padding: '3px 12px',
                 paddingLeft: row.depth * 16 + 12,
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-                gap: 4,
-                fontWeight: row.isDir ? 600 : undefined,
+                overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                gap: 4, fontWeight: row.isDir ? 600 : undefined,
                 color: row.isDir ? '#89b4fa' : '#cdd6f4',
               }}>
                 {row.isDir ? (
-                  <>
-                    <FolderOutlined style={{ fontSize: 12, flexShrink: 0 }} />
-                    <span>{row.name}</span>
-                  </>
+                  <><FolderOutlined style={{ fontSize: 12, flexShrink: 0 }} /><span>{row.name}</span></>
                 ) : (
-                  <>
-                    <FileOutlined style={{ fontSize: 12, flexShrink: 0, opacity: 0.6 }} />
-                    <span>{row.name}</span>
-                  </>
+                  <><FileOutlined style={{ fontSize: 12, flexShrink: 0, opacity: 0.6 }} /><span>{row.name}</span></>
                 )}
               </div>
             </div>
           ))
         ) : (
-          <Empty description="无文件" style={{ padding: 40 }} />
+          <Empty description={t('result.error.empty')} style={{ padding: 40 }} />
         )}
       </div>
     </div>

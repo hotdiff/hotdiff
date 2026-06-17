@@ -24,7 +24,7 @@ func (a *App) startup(ctx context.Context) {
 
 func (a *App) SelectDirectory() string {
 	dir, err := runtime.OpenDirectoryDialog(a.ctx, runtime.OpenDialogOptions{
-		Title: "选择目录",
+		Title: "Select Directory",
 	})
 	if err != nil {
 		return ""
@@ -34,7 +34,7 @@ func (a *App) SelectDirectory() string {
 
 func (a *App) SelectFile() string {
 	file, err := runtime.OpenFileDialog(a.ctx, runtime.OpenDialogOptions{
-		Title: "选择文件",
+		Title: "Select File",
 	})
 	if err != nil {
 		return ""
@@ -109,11 +109,11 @@ func buildDiffDetail(leftPath, rightPath string) *DiffDetailResult {
 	if leftPath != "" {
 		data, err := os.ReadFile(leftPath)
 		if err != nil {
-			result.Error = "读取左侧文件失败: " + err.Error()
+			result.Error = "Failed to read left file: " + err.Error()
 			return result
 		}
 		if bytes.Contains(data, []byte{0}) {
-			result.Error = "不支持二进制文件比较"
+			result.Error = "Binary file not supported"
 			return result
 		}
 		result.Original = string(data)
@@ -121,11 +121,11 @@ func buildDiffDetail(leftPath, rightPath string) *DiffDetailResult {
 	if rightPath != "" {
 		data, err := os.ReadFile(rightPath)
 		if err != nil {
-			result.Error = "读取右侧文件失败: " + err.Error()
+			result.Error = "Failed to read right file: " + err.Error()
 			return result
 		}
 		if bytes.Contains(data, []byte{0}) {
-			result.Error = "不支持二进制文件比较"
+			result.Error = "Binary file not supported"
 			return result
 		}
 		result.Modified = string(data)

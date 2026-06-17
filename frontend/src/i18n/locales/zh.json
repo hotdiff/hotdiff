@@ -1,0 +1,40 @@
+{
+  "app": {
+    "title": "HOT DIFF",
+    "comparing": "比较中...",
+    "result": "比较结果",
+    "home": "首页"
+  },
+  "window": {
+    "title": "HOT DIFF - 文件比较工具"
+  },
+  "home": {
+    "chooseLeft": "选择左侧文件或目录...",
+    "chooseRight": "选择右侧文件或目录...",
+    "compare": "开始比较"
+  },
+  "result": {
+    "title": "比较结果",
+    "comparing": "正在比较...",
+    "status": "状态",
+    "error": {
+      "title": "比较出错",
+      "empty": "无文件"
+    }
+  },
+  "diff": {
+    "loading": "加载差异详情...",
+    "loadingEditor": "加载编辑器...",
+    "error": {
+      "title": "加载出错",
+      "empty": "暂无内容",
+      "identical": "文件相同",
+      "binary": "不支持二进制文件比较"
+    },
+    "deleted": "[已删除]",
+    "new": "[新增]"
+  },
+  "menu": {
+    "lang": "Language"
+  }
+}
