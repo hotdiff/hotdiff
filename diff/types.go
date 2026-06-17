@@ -60,38 +60,3 @@ func (s FileStatus) String() string {
 	}
 	return "?"
 }
-
-type SplitLineType int
-
-const (
-	SplitContext SplitLineType = iota
-	SplitChanged
-	SplitDel
-	SplitAdd
-	SplitSection
-)
-
-type SplitLine struct {
-	LeftNum     int
-	RightNum    int
-	LeftLine    string
-	RightLine   string
-	Type        SplitLineType
-	SectionText string
-}
-
-func (s FileStatus) CSSClass() string {
-	switch s {
-	case StatusSame:
-		return "status-same"
-	case StatusDifferent:
-		return "status-different"
-	case StatusSimilar:
-		return "status-similar"
-	case StatusLeftOnly:
-		return "status-left-only"
-	case StatusRightOnly:
-		return "status-right-only"
-	}
-	return ""
-}
