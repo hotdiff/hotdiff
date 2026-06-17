@@ -60,14 +60,16 @@ func (a *App) GetDiffDetail(leftPath, rightPath string) *DiffDetailResult {
 }
 
 type DiffDetailResult struct {
-	Original string           `json:"original"`
-	Modified string           `json:"modified"`
-	Language string           `json:"language"`
-	IsCsv    bool             `json:"isCsv"`
-	CsvTable *diff.CsvDiffTable `json:"csvTable,omitempty"`
-	OldName  string           `json:"oldName"`
-	NewName  string           `json:"newName"`
-	Error    string           `json:"error,omitempty"`
+	Original     string             `json:"original"`
+	Modified     string             `json:"modified"`
+	Language     string             `json:"language"`
+	IsCsv        bool               `json:"isCsv"`
+	CsvTable     *diff.CsvDiffTable `json:"csvTable,omitempty"`
+	CsvLeftData  string             `json:"csvLeftData,omitempty"`
+	CsvRightData string             `json:"csvRightData,omitempty"`
+	OldName      string             `json:"oldName"`
+	NewName      string             `json:"newName"`
+	Error        string             `json:"error,omitempty"`
 }
 
 func buildDiffDetail(leftPath, rightPath string) *DiffDetailResult {
@@ -80,12 +82,13 @@ func buildDiffDetail(leftPath, rightPath string) *DiffDetailResult {
 		result.IsCsv = true
 		result.OldName = filepath.Base(leftPath)
 		result.NewName = filepath.Base(rightPath)
-		table, err := diff.ComputeCsvDiff(leftPath, rightPath)
+		leftData, rightData, err := diff.ReadCsvAsJSON(leftPath, rightPath)
 		if err != nil {
 			result.Error = err.Error()
 			return result
 		}
-		result.CsvTable = table
+		result.CsvLeftData = leftData
+		result.CsvRightData = rightData
 		return result
 	}
 

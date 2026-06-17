@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Typography, Spin, Alert, Empty } from 'antd';
 import { DiffEditor, loader } from '@monaco-editor/react';
 import * as monaco from 'monaco-editor';
 import { useTranslation } from 'react-i18next';
+import { Grid } from '@githubocto/flat-ui';
 import type { TabData } from '../models/types';
-import type { main, diff } from '../../wailsjs/go/models';
+import type { main } from '../../wailsjs/go/models';
 import { GetDiffDetail } from '../../wailsjs/go/main/App';
 
 loader.config({ monaco });
@@ -16,110 +17,30 @@ interface DiffViewProps {
   isDark: boolean;
 }
 
-function getCsvCellClass(cellType: number): string {
-  switch (cellType) {
-    case 2: return 'csv-cell-changed';
-    case 3: return 'csv-cell-add';
-    case 4: return 'csv-cell-del';
-    default: return '';
-  }
-}
-
-function getCsvCellLabel(cellType: number, leftValue: string, rightValue: string): React.ReactNode {
-  if (leftValue && rightValue && leftValue !== rightValue) {
-    return (
-      <>
-        <span style={{ background: 'var(--highlight-deleted)', color: 'var(--csv-deleted-text)', padding: '1px 4px', borderRadius: 2 }}>{leftValue}</span>
-        {' '}
-        <span style={{ background: 'var(--highlight-added)', color: 'var(--csv-added-text)', padding: '1px 4px', borderRadius: 2 }}>{rightValue}</span>
-      </>
-    );
-  }
-  if (leftValue && !rightValue) {
-    return <span style={{ background: 'var(--highlight-deleted)', color: 'var(--csv-deleted-text)', padding: '1px 4px', borderRadius: 2 }}>{leftValue}</span>;
-  }
-  if (!leftValue && rightValue) {
-    return <span style={{ background: 'var(--highlight-added)', color: 'var(--csv-added-text)', padding: '1px 4px', borderRadius: 2 }}>{rightValue}</span>;
-  }
-  return leftValue || rightValue;
-}
-
-function CsvDiffTableView({ table, leftName, rightName }: { table: diff.CsvDiffTable; leftName: string; rightName: string }) {
+function CsvDiffView({ leftData, rightData }: { leftData: string; rightData: string }) {
   const { t } = useTranslation();
-  if (!table || (!table.Headers?.length && !table.Rows?.length)) {
+
+  const leftRows = useMemo(() => {
+    if (!leftData) return [];
+    try { return JSON.parse(leftData) as Record<string, string>[]; } catch { return []; }
+  }, [leftData]);
+
+  const rightRows = useMemo(() => {
+    if (!rightData) return [];
+    try { return JSON.parse(rightData) as Record<string, string>[]; } catch { return []; }
+  }, [rightData]);
+
+  if (!leftRows.length && !rightRows.length) {
     return <Empty description={t('diff.error.identical')} style={{ padding: 40 }} />;
   }
 
   return (
-    <div style={{ overflow: 'auto', padding: '16px 0' }}>
-      <div style={{
-        display: 'flex',
-        padding: '8px 16px',
-        background: 'var(--bg-secondary)',
-        borderBottom: '1px solid var(--border-color)',
-        fontSize: 12,
-        fontFamily: 'monospace',
-      }}>
-        <Text style={{ flex: 1, color: 'var(--csv-deleted-text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-          {leftName || t('diff.deleted')}
-        </Text>
-        <Text style={{ width: 40, textAlign: 'center', color: 'var(--text-faint)' }}>⇔</Text>
-        <Text style={{ flex: 1, color: 'var(--csv-added-text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', textAlign: 'right' }}>
-          {rightName || t('diff.new')}
-        </Text>
-      </div>
-      <table style={{
-        width: '100%',
-        borderCollapse: 'collapse',
-        fontSize: 12,
-        fontFamily: '"SF Mono", "Fira Code", monospace',
-      }}>
-        <thead>
-          <tr>
-            <th style={{
-              border: '1px solid var(--border-color)',
-              padding: '4px 8px',
-              background: 'var(--bg-secondary)',
-              color: 'var(--text-secondary)',
-              width: 40,
-              textAlign: 'right',
-            }}>#</th>
-            {table.Headers.map((cell, i) => (
-              <th key={i} className={getCsvCellClass(cell.CellType)} style={{
-                border: '1px solid var(--border-color)',
-                padding: '4px 8px',
-                background: cell.CellType === 2 ? 'var(--csv-changed-bg)' : cell.CellType === 3 ? 'var(--csv-added-bg)' : cell.CellType === 4 ? 'var(--csv-deleted-bg)' : 'var(--bg-secondary)',
-                color: 'var(--text-secondary)',
-                fontWeight: 600,
-              }}>
-                {getCsvCellLabel(cell.CellType, cell.LeftValue, cell.RightValue)}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {table.Rows.map((row) => (
-            <tr key={row.RowNum}>
-              <td style={{
-                border: '1px solid var(--border-color)',
-                padding: '4px 8px',
-                color: 'var(--text-faint)',
-                textAlign: 'right',
-                width: 40,
-              }}>{row.RowNum}</td>
-              {row.Cells.map((cell, j) => (
-                <td key={j} className={getCsvCellClass(cell.CellType)} style={{
-                  border: '1px solid var(--border-color)',
-                  padding: '4px 8px',
-                  background: cell.CellType === 2 ? 'var(--csv-changed-bg)' : cell.CellType === 3 ? 'var(--csv-added-bg)' : cell.CellType === 4 ? 'var(--csv-deleted-bg)' : undefined,
-                }}>
-                  {getCsvCellLabel(cell.CellType, cell.LeftValue, cell.RightValue)}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className="csv-diff-grid" style={{ height: '100%', overflow: 'hidden' }}>
+      <Grid
+        data={leftRows}
+        diffData={rightRows.length > 0 ? rightRows : undefined}
+        canDownload={false}
+      />
     </div>
   );
 }
@@ -167,15 +88,12 @@ export default function DiffView({ tab, isDark }: DiffViewProps) {
     return <Empty description={t('diff.error.empty')} style={{ padding: 40 }} />;
   }
 
-  if (content.isCsv && content.csvTable) {
+  if (content.isCsv && content.csvLeftData !== undefined && content.csvRightData !== undefined) {
     return (
-      <div style={{ padding: '0 16px', height: '100%', overflow: 'auto' }}>
-        <CsvDiffTableView
-          table={content.csvTable}
-          leftName={tab.leftPath || ''}
-          rightName={tab.rightPath || ''}
-        />
-      </div>
+      <CsvDiffView
+        leftData={content.csvLeftData}
+        rightData={content.csvRightData}
+      />
     );
   }
 

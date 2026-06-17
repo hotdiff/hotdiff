@@ -2,9 +2,11 @@ package diff
 
 import (
 	"encoding/csv"
+	"encoding/json"
 	"fmt"
 	"os"
 	"strings"
+	"bytes"
 )
 
 type CsvDiffCellType int
@@ -199,6 +201,179 @@ func computeCsvDiff(leftPath, rightPath string) (*CsvDiffTable, error) {
 type colMapping struct {
 	leftIdx  int
 	rightIdx int
+}
+
+func ReadCsvAsMapSlice(path string) ([]map[string]string, error) {
+	if path == "" {
+		return []map[string]string{}, nil
+	}
+	rows, err := readCsvFile(path)
+	if err != nil {
+		return nil, err
+	}
+	if len(rows) == 0 {
+		return []map[string]string{}, nil
+	}
+	headers := rows[0]
+	var result []map[string]string
+	for i := 1; i < len(rows); i++ {
+		m := make(map[string]string)
+		for j, val := range rows[i] {
+			key := fmt.Sprintf("col_%d", j)
+			if j < len(headers) {
+				key = headers[j]
+			}
+			m[key] = val
+		}
+		result = append(result, m)
+	}
+	return result, nil
+}
+
+func ReadCsvAsJSON(leftPath, rightPath string) (leftJSON, rightJSON string, err error) {
+	leftRows, lErr := readCsvFile(leftPath)
+	if lErr != nil && leftPath != "" {
+		return "", "", fmt.Errorf("read left csv: %w", lErr)
+	}
+	rightRows, rErr := readCsvFile(rightPath)
+	if rErr != nil && rightPath != "" {
+		return "", "", fmt.Errorf("read right csv: %w", rErr)
+	}
+
+	canonicalCols, leftColMap, rightColMap := buildCanonicalColumnMap(leftRows, rightRows)
+
+	leftData := normalizeCsvRows(leftRows, leftColMap, canonicalCols)
+	rightData := normalizeCsvRows(rightRows, rightColMap, canonicalCols)
+
+	leftJSON, err = marshalOrderedJSON(leftData, canonicalCols)
+	if err != nil {
+		return "", "", fmt.Errorf("marshal left csv: %w", err)
+	}
+	rightJSON, err = marshalOrderedJSON(rightData, canonicalCols)
+	if err != nil {
+		return "", "", fmt.Errorf("marshal right csv: %w", err)
+	}
+
+	return leftJSON, rightJSON, nil
+}
+
+func marshalOrderedJSON(rows [][]string, colOrder []string) (string, error) {
+	var buf bytes.Buffer
+	buf.WriteByte('[')
+	for i, row := range rows {
+		if i > 0 {
+			buf.WriteByte(',')
+		}
+		buf.WriteByte('{')
+		for j, col := range colOrder {
+			if j > 0 {
+				buf.WriteByte(',')
+			}
+			colJSON, _ := json.Marshal(col)
+			buf.Write(colJSON)
+			buf.WriteByte(':')
+			if j < len(row) {
+				valJSON, _ := json.Marshal(row[j])
+				buf.Write(valJSON)
+			} else {
+				buf.WriteString(`""`)
+			}
+		}
+		buf.WriteByte('}')
+	}
+	buf.WriteByte(']')
+	return buf.String(), nil
+}
+
+func buildCanonicalColumnMap(leftRows, rightRows [][]string) (canonicalCols []string, leftColMap map[int]int, rightColMap map[int]int) {
+	leftColMap = make(map[int]int)
+	rightColMap = make(map[int]int)
+
+	var leftHeaders, rightHeaders []string
+	if len(leftRows) > 0 {
+		leftHeaders = leftRows[0]
+	}
+	if len(rightRows) > 0 {
+		rightHeaders = rightRows[0]
+	}
+
+	rightHeaderLower := make(map[string]int)
+	for i, h := range rightHeaders {
+		key := strings.TrimSpace(strings.ToLower(h))
+		if _, exists := rightHeaderLower[key]; !exists {
+			rightHeaderLower[key] = i
+		}
+	}
+
+	matchedRight := make(map[int]bool)
+
+	for li, lh := range leftHeaders {
+		canonicalCols = append(canonicalCols, lh)
+		leftColMap[li] = li
+
+		key := strings.TrimSpace(strings.ToLower(lh))
+		if ri, ok := rightHeaderLower[key]; ok && !matchedRight[ri] {
+			rightColMap[ri] = li
+			matchedRight[ri] = true
+		}
+	}
+
+	for ri := range rightHeaders {
+		if !matchedRight[ri] {
+			canonicalCols = append(canonicalCols, rightHeaders[ri])
+			rightColMap[ri] = len(canonicalCols) - 1
+			leftColMap[len(leftHeaders)+ri] = len(canonicalCols) - 1
+		}
+	}
+
+	if len(canonicalCols) == 0 {
+		maxCols := 0
+		for _, r := range leftRows {
+			if len(r) > maxCols {
+				maxCols = len(r)
+			}
+		}
+		for _, r := range rightRows {
+			if len(r) > maxCols {
+				maxCols = len(r)
+			}
+		}
+		for i := 0; i < maxCols; i++ {
+			colName := fmt.Sprintf("col_%d", i+1)
+			canonicalCols = append(canonicalCols, colName)
+			leftColMap[i] = i
+			rightColMap[i] = i
+		}
+	}
+
+	return
+}
+
+func normalizeCsvRows(rows [][]string, colMap map[int]int, canonicalCols []string) [][]string {
+	var result [][]string
+
+	if len(rows) == 0 {
+		return result
+	}
+
+	hasHeader := len(canonicalCols) > 0 && len(rows) > 0
+
+	startRow := 0
+	if hasHeader {
+		startRow = 1
+	}
+
+	for i := startRow; i < len(rows); i++ {
+		row := make([]string, len(canonicalCols))
+		for srcIdx, val := range rows[i] {
+			if dstIdx, ok := colMap[srcIdx]; ok && dstIdx < len(canonicalCols) {
+				row[dstIdx] = val
+			}
+		}
+		result = append(result, row)
+	}
+
+	return result
 }
 
 func mapCsvColumns(leftRows, rightRows [][]string) []colMapping {

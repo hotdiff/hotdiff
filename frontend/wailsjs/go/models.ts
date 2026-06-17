@@ -91,6 +91,8 @@ export namespace main {
 	    language: string;
 	    isCsv: boolean;
 	    csvTable?: diff.CsvDiffTable;
+	    csvLeftData?: string;
+	    csvRightData?: string;
 	    oldName: string;
 	    newName: string;
 	    error?: string;
@@ -106,6 +108,8 @@ export namespace main {
 	        this.language = source["language"];
 	        this.isCsv = source["isCsv"];
 	        this.csvTable = this.convertValues(source["csvTable"], diff.CsvDiffTable);
+	        this.csvLeftData = source["csvLeftData"];
+	        this.csvRightData = source["csvRightData"];
 	        this.oldName = source["oldName"];
 	        this.newName = source["newName"];
 	        this.error = source["error"];
