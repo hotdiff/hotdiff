@@ -9,8 +9,8 @@
     "title": "Hot Diff - File Comparison Tool"
   },
   "home": {
-    "chooseLeft": "Choose left file or directory...",
-    "chooseRight": "Choose right file or directory...",
+    "chooseLeft": "Choose old file or directory...",
+    "chooseRight": "Choose new file or directory...",
     "compare": "Compare"
   },
   "result": {
