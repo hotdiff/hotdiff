@@ -211,17 +211,13 @@ export default function App() {
                 <Text>jack.ju@itiky.com</Text>
               </div>
               <div>
-                <Text type="secondary">{t('about.license')}:</Text>{' '}
-                <Text>{t('about.mit')}</Text>
-              </div>
-              <div>
                 <Text type="secondary">{t('about.repository')}:</Text>{' '}
                 <Link onClick={() => BrowserOpenURL('https://github.com/hotdiff/hotdiff')}>
                   https://github.com/hotdiff/hotdiff
                 </Link>
               </div>
               <div style={{ marginTop: 8 }}>
-                <Text type="secondary">{t('about.poweredBy')} v2.12.0</Text>
+                <Text type="secondary">{t('about.mit')} | {t('about.poweredBy')} v2.12.0</Text>
               </div>
             </div>
           </Modal>

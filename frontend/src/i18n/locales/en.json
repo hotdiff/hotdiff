@@ -41,9 +41,8 @@
     "title": "About Hot Diff",
     "version": "Version",
     "email": "Email",
-    "license": "License",
     "repository": "Repository",
-    "poweredBy": "Powered By Wails",
-    "mit": "MIT"
+    "poweredBy": "Powered by Wails",
+    "mit": "MIT License"
   }
 }

@@ -41,9 +41,8 @@
     "title": "关于 Hot Diff",
     "version": "版本",
     "email": "邮箱",
-    "license": "许可证",
     "repository": "仓库",
-    "poweredBy": "Powered By Wails",
-    "mit": "MIT"
+    "poweredBy": "基于 Wails 构建",
+    "mit": "MIT 许可证"
   }
 }
