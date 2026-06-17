@@ -1,4 +1,5 @@
 build/bin
+build/appicon.iconset
 build/darwin/appicon.icns
 build/windows/installer/tmp/
 frontend/dist

@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
-  <!-- 背景 -->
-  <rect width="1024" height="1024" fill="#95272c"/>
+  <!-- 背景：824x824，圆角半径 185.4，居中显示 -->
+  <rect x="100" y="100" width="824" height="824" rx="185.4" fill="#95272c"/>
 
   <!-- 图标：512x512，居中显示 -->
   <g transform="translate(256, 256)">
