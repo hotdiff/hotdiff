@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import type { TabData, FileResult, CompareSummary } from '../models/types';
 import { FileStatus } from '../models/types';
 
-const { Title, Text } = Typography;
+const { Text } = Typography;
 
 interface ResultViewProps {
   tab: TabData;
@@ -174,9 +174,6 @@ export default function ResultView({ tab, onOpenFileDiff }: ResultViewProps) {
   if (tab.loading) {
     return (
       <div style={{ padding: 40 }}>
-        <div style={{ textAlign: 'center', marginBottom: 24 }}>
-          <Title level={3} style={{ color: '#cdd6f4' }}>{t('result.title')}</Title>
-        </div>
         <div style={{ maxWidth: 400, margin: '0 auto' }}>
           <Spin tip={t('result.comparing')} size="large" style={{ display: 'block', marginBottom: 24 }}>
             <div style={{ height: 50 }} />
@@ -189,7 +186,7 @@ export default function ResultView({ tab, onOpenFileDiff }: ResultViewProps) {
             />
           )}
           {tab.progress && (
-            <Text type="secondary" style={{ display: 'block', textAlign: 'center', marginTop: 8 }}>
+            <Text type="secondary" style={{ display: 'block', textAlign: 'center', marginTop: 8, fontSize: 14 }}>
               {tab.progress.fileName}
             </Text>
           )}
@@ -205,14 +202,13 @@ export default function ResultView({ tab, onOpenFileDiff }: ResultViewProps) {
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', padding: '0 16px' }}>
       <div style={{
         display: 'flex',
-        justifyContent: 'space-between',
+        justifyContent: 'flex-end',
         alignItems: 'center',
         padding: '12px 0',
         borderBottom: '1px solid #313244',
         flexShrink: 0,
       }}>
-        <Title level={4} style={{ color: '#cdd6f4', margin: 0 }}>{t('result.title')}</Title>
-        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', fontSize: 14 }}>
           <Tag color="green" style={{ margin: 0 }}>= {result.sameCount}</Tag>
           <Tag color="red" style={{ margin: 0 }}>≠ {result.differentCount}</Tag>
           <Tag color="gold" style={{ margin: 0 }}>≈ {result.similarCount}</Tag>
@@ -229,19 +225,19 @@ export default function ResultView({ tab, onOpenFileDiff }: ResultViewProps) {
         flexShrink: 0,
       }}>
         <Text style={{
-          padding: '8px 12px', fontSize: 12, fontWeight: 700,
+          padding: '8px 12px', fontSize: 14, fontWeight: 700,
           color: '#a6adc8', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
         }}>
           {result.leftDir}
         </Text>
         <Text style={{
-          padding: '8px 0', fontSize: 12, fontWeight: 700,
+          padding: '8px 0', fontSize: 14, fontWeight: 700,
           color: '#a6adc8', textAlign: 'center',
         }}>
           {t('result.status')}
         </Text>
         <Text style={{
-          padding: '8px 12px', fontSize: 12, fontWeight: 700,
+          padding: '8px 12px', fontSize: 14, fontWeight: 700,
           color: '#a6adc8', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
         }}>
           {result.rightDir}
@@ -257,7 +253,7 @@ export default function ResultView({ tab, onOpenFileDiff }: ResultViewProps) {
                 display: 'grid',
                 gridTemplateColumns: '1fr 48px 1fr',
                 cursor: 'pointer',
-                fontSize: 13,
+                fontSize: 14,
                 borderBottom: '1px solid #252536',
                 background: 'transparent',
               }}
@@ -282,7 +278,7 @@ export default function ResultView({ tab, onOpenFileDiff }: ResultViewProps) {
 
               <div style={{
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                padding: '3px 0', fontSize: 16, fontWeight: 700,
+                padding: '3px 0', fontSize: 18, fontWeight: 700,
                 borderLeft: '1px solid #313244', borderRight: '1px solid #313244',
                 color: getStatusColor(row.status),
               }}>
