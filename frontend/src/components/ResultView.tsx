@@ -146,7 +146,7 @@ export default function ResultView({ tab, onOpenFileDiff }: ResultViewProps) {
     return result;
   }, [allRows, collapsedDirs]);
 
-  const handleDoubleClick = useCallback((row: FlatRow) => {
+  const handleOpenFile = useCallback((row: FlatRow) => {
     if (row.isDir) return;
     if (!row.leftPath && !row.rightPath) return;
     const fileTab: TabData = {
@@ -259,8 +259,7 @@ export default function ResultView({ tab, onOpenFileDiff }: ResultViewProps) {
               }}
               onMouseEnter={e => (e.currentTarget.style.background = '#313244')}
               onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
-              onClick={() => { if (row.isDir) toggleDir(row.path); }}
-              onDoubleClick={() => { if (!row.isDir) handleDoubleClick(row); }}
+              onClick={() => { if (row.isDir) { toggleDir(row.path); } else { handleOpenFile(row); } }}
             >
               <div style={{
                 display: 'flex', alignItems: 'center', padding: '3px 12px',
