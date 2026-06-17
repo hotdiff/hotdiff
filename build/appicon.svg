@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <!-- 背景 -->
+  <rect width="1024" height="1024" fill="#95272c"/>
+
+  <!-- 图标：512x512，居中显示 -->
+  <g transform="translate(256, 256)">
+    <svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="2 2 20 20" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="18" cy="18" r="3"/>
+      <circle cx="6" cy="6" r="3"/>
+      <path d="M13 6h3a2 2 0 0 1 2 2v7"/>
+      <path d="M11 18H8a2 2 0 0 1-2-2V9"/>
+    </svg>
+  </g>
+</svg>
