@@ -89,12 +89,12 @@ function getStatusChar(status: FileStatus): string {
 
 function getStatusColor(status: FileStatus): string {
   switch (status) {
-    case FileStatus.Same: return '#a6e3a1';
-    case FileStatus.Different: return '#f38ba8';
-    case FileStatus.Similar: return '#f9e2af';
-    case FileStatus.LeftOnly: return '#89b4fa';
-    case FileStatus.RightOnly: return '#cba6f7';
-    default: return '#a6adc8';
+    case FileStatus.Same: return 'var(--status-same)';
+    case FileStatus.Different: return 'var(--status-different)';
+    case FileStatus.Similar: return 'var(--status-similar)';
+    case FileStatus.LeftOnly: return 'var(--status-left-only)';
+    case FileStatus.RightOnly: return 'var(--status-right-only)';
+    default: return 'var(--status-unknown)';
   }
 }
 
@@ -182,7 +182,7 @@ export default function ResultView({ tab, onOpenFileDiff }: ResultViewProps) {
             <Progress
               percent={tab.progress.total > 0 ? Math.round((tab.progress.current / tab.progress.total) * 100) : 0}
               format={() => `${tab.progress?.current || 0} / ${tab.progress?.total || 0}`}
-              strokeColor={{ from: '#cba6f7', to: '#89b4fe' }}
+              strokeColor={{ from: 'var(--color-primary)', to: 'var(--status-left-only)' }}
             />
           )}
           {tab.progress && (
@@ -205,7 +205,7 @@ export default function ResultView({ tab, onOpenFileDiff }: ResultViewProps) {
         justifyContent: 'flex-end',
         alignItems: 'center',
         padding: '12px 0',
-        borderBottom: '1px solid #313244',
+        borderBottom: '1px solid var(--border-color)',
         flexShrink: 0,
       }}>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', fontSize: 14 }}>
@@ -220,25 +220,25 @@ export default function ResultView({ tab, onOpenFileDiff }: ResultViewProps) {
       <div style={{
         display: 'grid',
         gridTemplateColumns: '1fr 48px 1fr',
-        borderBottom: '1px solid #313244',
-        background: '#181825',
+        borderBottom: '1px solid var(--border-color)',
+        background: 'var(--bg-secondary)',
         flexShrink: 0,
       }}>
         <Text style={{
           padding: '8px 12px', fontSize: 14, fontWeight: 700,
-          color: '#a6adc8', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+          color: 'var(--text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
         }}>
           {result.leftDir}
         </Text>
         <Text style={{
           padding: '8px 0', fontSize: 14, fontWeight: 700,
-          color: '#a6adc8', textAlign: 'center',
+          color: 'var(--text-secondary)', textAlign: 'center',
         }}>
           {t('result.status')}
         </Text>
         <Text style={{
           padding: '8px 12px', fontSize: 14, fontWeight: 700,
-          color: '#a6adc8', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+          color: 'var(--text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
         }}>
           {result.rightDir}
         </Text>
@@ -254,10 +254,10 @@ export default function ResultView({ tab, onOpenFileDiff }: ResultViewProps) {
                 gridTemplateColumns: '1fr 48px 1fr',
                 cursor: 'pointer',
                 fontSize: 14,
-                borderBottom: '1px solid #252536',
+                borderBottom: '1px solid var(--border-subtle)',
                 background: 'transparent',
               }}
-              onMouseEnter={e => (e.currentTarget.style.background = '#313244')}
+              onMouseEnter={e => (e.currentTarget.style.background = 'var(--bg-row-hover)')}
               onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
               onClick={() => { if (row.isDir) { toggleDir(row.path); } else { handleOpenFile(row); } }}
             >
@@ -266,7 +266,7 @@ export default function ResultView({ tab, onOpenFileDiff }: ResultViewProps) {
                 paddingLeft: row.depth * 16 + 12,
                 overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
                 gap: 4, fontWeight: row.isDir ? 600 : undefined,
-                color: row.isDir ? '#89b4fa' : '#cdd6f4',
+                color: row.isDir ? 'var(--dir-color)' : 'var(--text-primary)',
               }}>
                 {row.isDir ? (
                   <><FolderOutlined style={{ fontSize: 12, flexShrink: 0 }} /><span>{row.name}</span></>
@@ -278,7 +278,7 @@ export default function ResultView({ tab, onOpenFileDiff }: ResultViewProps) {
               <div style={{
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 padding: '3px 0', fontSize: 18, fontWeight: 700,
-                borderLeft: '1px solid #313244', borderRight: '1px solid #313244',
+                borderLeft: '1px solid var(--border-color)', borderRight: '1px solid var(--border-color)',
                 color: getStatusColor(row.status),
               }}>
                 {!row.isDir && getStatusChar(row.status)}
@@ -289,7 +289,7 @@ export default function ResultView({ tab, onOpenFileDiff }: ResultViewProps) {
                 paddingLeft: row.depth * 16 + 12,
                 overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
                 gap: 4, fontWeight: row.isDir ? 600 : undefined,
-                color: row.isDir ? '#89b4fa' : '#cdd6f4',
+                color: row.isDir ? 'var(--dir-color)' : 'var(--text-primary)',
               }}>
                 {row.isDir ? (
                   <><FolderOutlined style={{ fontSize: 12, flexShrink: 0 }} /><span>{row.name}</span></>

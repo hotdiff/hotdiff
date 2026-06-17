@@ -1,6 +1,79 @@
+:root,
+[data-theme="dark"] {
+  --color-primary: #fb923c;
+  --bg-primary: #1e1e2e;
+  --bg-secondary: #181825;
+  --bg-layout: #11111b;
+  --bg-hover: rgba(255, 255, 255, 0.04);
+  --bg-row-hover: #313244;
+  --border-color: #313244;
+  --border-subtle: #252536;
+  --text-primary: #cdd6f4;
+  --text-secondary: #a6adc8;
+  --text-faint: #585b70;
+  --text-dimmed: rgba(205, 214, 244, 0.25);
+  --text-on-primary: #1e1e2e;
+  --icon-color: rgba(205, 214, 244, 0.45);
+  --btn-disabled-bg: rgba(255, 255, 255, 0.06);
+  --status-same: #a6e3a1;
+  --status-different: #f38ba8;
+  --status-similar: #f9e2af;
+  --status-left-only: #89b4fa;
+  --status-right-only: #cba6f7;
+  --status-unknown: #a6adc8;
+  --dir-color: #89b4fa;
+  --scrollbar-track: #181825;
+  --scrollbar-thumb: #45475a;
+  --scrollbar-thumb-hover: #585b70;
+  --csv-changed-bg: #2a2a1e;
+  --csv-added-bg: #1e3a2f;
+  --csv-deleted-bg: #3a1e1e;
+  --csv-deleted-text: #f38ba8;
+  --csv-added-text: #a6e3a1;
+  --csv-changed-text: #f9e2af;
+  --highlight-deleted: rgba(243, 139, 168, 0.15);
+  --highlight-added: rgba(166, 227, 161, 0.15);
+}
+
+[data-theme="light"] {
+  --color-primary: #c2410c;
+  --bg-primary: #ffffff;
+  --bg-secondary: #fafafa;
+  --bg-layout: #f5f5f5;
+  --bg-hover: rgba(0, 0, 0, 0.04);
+  --bg-row-hover: #f0f0f0;
+  --border-color: #e8e8e8;
+  --border-subtle: #f0f0f0;
+  --text-primary: #1f1f1f;
+  --text-secondary: #8c8c8c;
+  --text-faint: #bfbfbf;
+  --text-dimmed: rgba(0, 0, 0, 0.25);
+  --text-on-primary: #ffffff;
+  --icon-color: rgba(0, 0, 0, 0.45);
+  --btn-disabled-bg: rgba(0, 0, 0, 0.04);
+  --status-same: #52c41a;
+  --status-different: #ff4d4f;
+  --status-similar: #faad14;
+  --status-left-only: #1677ff;
+  --status-right-only: #722ed1;
+  --status-unknown: #8c8c8c;
+  --dir-color: #1677ff;
+  --scrollbar-track: #fafafa;
+  --scrollbar-thumb: #d9d9d9;
+  --scrollbar-thumb-hover: #bfbfbf;
+  --csv-changed-bg: #fffbe6;
+  --csv-added-bg: #f6ffed;
+  --csv-deleted-bg: #fff2f0;
+  --csv-deleted-text: #cf1322;
+  --csv-added-text: #389e0d;
+  --csv-changed-text: #d48806;
+  --highlight-deleted: rgba(255, 77, 79, 0.1);
+  --highlight-added: rgba(82, 196, 26, 0.1);
+}
+
 html {
-  background-color: #1e1e2e;
-  color: #cdd6f4;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
 }
 
 body {
@@ -22,16 +95,16 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #181825;
+  background: var(--scrollbar-track);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #45475a;
+  background: var(--scrollbar-thumb);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #585b70;
+  background: var(--scrollbar-thumb-hover);
 }
 
 .ant-tabs {

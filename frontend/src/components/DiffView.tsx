@@ -13,6 +13,7 @@ const { Text } = Typography;
 
 interface DiffViewProps {
   tab: TabData;
+  isDark: boolean;
 }
 
 function getCsvCellClass(cellType: number): string {
@@ -28,17 +29,17 @@ function getCsvCellLabel(cellType: number, leftValue: string, rightValue: string
   if (leftValue && rightValue && leftValue !== rightValue) {
     return (
       <>
-        <span style={{ background: 'rgba(243,139,168,0.15)', color: '#f38ba8', padding: '1px 4px', borderRadius: 2 }}>{leftValue}</span>
+        <span style={{ background: 'var(--highlight-deleted)', color: 'var(--csv-deleted-text)', padding: '1px 4px', borderRadius: 2 }}>{leftValue}</span>
         {' '}
-        <span style={{ background: 'rgba(166,227,161,0.15)', color: '#a6e3a1', padding: '1px 4px', borderRadius: 2 }}>{rightValue}</span>
+        <span style={{ background: 'var(--highlight-added)', color: 'var(--csv-added-text)', padding: '1px 4px', borderRadius: 2 }}>{rightValue}</span>
       </>
     );
   }
   if (leftValue && !rightValue) {
-    return <span style={{ background: 'rgba(243,139,168,0.15)', color: '#f38ba8', padding: '1px 4px', borderRadius: 2 }}>{leftValue}</span>;
+    return <span style={{ background: 'var(--highlight-deleted)', color: 'var(--csv-deleted-text)', padding: '1px 4px', borderRadius: 2 }}>{leftValue}</span>;
   }
   if (!leftValue && rightValue) {
-    return <span style={{ background: 'rgba(166,227,161,0.15)', color: '#a6e3a1', padding: '1px 4px', borderRadius: 2 }}>{rightValue}</span>;
+    return <span style={{ background: 'var(--highlight-added)', color: 'var(--csv-added-text)', padding: '1px 4px', borderRadius: 2 }}>{rightValue}</span>;
   }
   return leftValue || rightValue;
 }
@@ -54,16 +55,16 @@ function CsvDiffTableView({ table, leftName, rightName }: { table: diff.CsvDiffT
       <div style={{
         display: 'flex',
         padding: '8px 16px',
-        background: '#181825',
-        borderBottom: '1px solid #313244',
+        background: 'var(--bg-secondary)',
+        borderBottom: '1px solid var(--border-color)',
         fontSize: 12,
         fontFamily: 'monospace',
       }}>
-        <Text style={{ flex: 1, color: '#f38ba8', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+        <Text style={{ flex: 1, color: 'var(--csv-deleted-text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
           {leftName || t('diff.deleted')}
         </Text>
-        <Text style={{ width: 40, textAlign: 'center', color: '#585b70' }}>⇔</Text>
-        <Text style={{ flex: 1, color: '#a6e3a1', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', textAlign: 'right' }}>
+        <Text style={{ width: 40, textAlign: 'center', color: 'var(--text-faint)' }}>⇔</Text>
+        <Text style={{ flex: 1, color: 'var(--csv-added-text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', textAlign: 'right' }}>
           {rightName || t('diff.new')}
         </Text>
       </div>
@@ -76,19 +77,19 @@ function CsvDiffTableView({ table, leftName, rightName }: { table: diff.CsvDiffT
         <thead>
           <tr>
             <th style={{
-              border: '1px solid #313244',
+              border: '1px solid var(--border-color)',
               padding: '4px 8px',
-              background: '#181825',
-              color: '#a6adc8',
+              background: 'var(--bg-secondary)',
+              color: 'var(--text-secondary)',
               width: 40,
               textAlign: 'right',
             }}>#</th>
             {table.Headers.map((cell, i) => (
               <th key={i} className={getCsvCellClass(cell.CellType)} style={{
-                border: '1px solid #313244',
+                border: '1px solid var(--border-color)',
                 padding: '4px 8px',
-                background: cell.CellType === 2 ? '#2a2a1e' : cell.CellType === 3 ? '#1e3a2f' : cell.CellType === 4 ? '#3a1e1e' : '#181825',
-                color: '#a6adc8',
+                background: cell.CellType === 2 ? 'var(--csv-changed-bg)' : cell.CellType === 3 ? 'var(--csv-added-bg)' : cell.CellType === 4 ? 'var(--csv-deleted-bg)' : 'var(--bg-secondary)',
+                color: 'var(--text-secondary)',
                 fontWeight: 600,
               }}>
                 {getCsvCellLabel(cell.CellType, cell.LeftValue, cell.RightValue)}
@@ -100,17 +101,17 @@ function CsvDiffTableView({ table, leftName, rightName }: { table: diff.CsvDiffT
           {table.Rows.map((row) => (
             <tr key={row.RowNum}>
               <td style={{
-                border: '1px solid #313244',
+                border: '1px solid var(--border-color)',
                 padding: '4px 8px',
-                color: '#585b70',
+                color: 'var(--text-faint)',
                 textAlign: 'right',
                 width: 40,
               }}>{row.RowNum}</td>
               {row.Cells.map((cell, j) => (
                 <td key={j} className={getCsvCellClass(cell.CellType)} style={{
-                  border: '1px solid #313244',
+                  border: '1px solid var(--border-color)',
                   padding: '4px 8px',
-                  background: cell.CellType === 2 ? '#2a2a1e' : cell.CellType === 3 ? '#1e3a2f' : cell.CellType === 4 ? '#3a1e1e' : undefined,
+                  background: cell.CellType === 2 ? 'var(--csv-changed-bg)' : cell.CellType === 3 ? 'var(--csv-added-bg)' : cell.CellType === 4 ? 'var(--csv-deleted-bg)' : undefined,
                 }}>
                   {getCsvCellLabel(cell.CellType, cell.LeftValue, cell.RightValue)}
                 </td>
@@ -123,7 +124,7 @@ function CsvDiffTableView({ table, leftName, rightName }: { table: diff.CsvDiffT
   );
 }
 
-export default function DiffView({ tab }: DiffViewProps) {
+export default function DiffView({ tab, isDark }: DiffViewProps) {
   const { t } = useTranslation();
   const [content, setContent] = useState<main.DiffDetailResult | null>(null);
   const [loading, setLoading] = useState(tab.loading !== false);
@@ -184,17 +185,17 @@ export default function DiffView({ tab }: DiffViewProps) {
         display: 'flex',
         alignItems: 'center',
         padding: '6px 16px',
-        background: '#181825',
-        borderBottom: '1px solid #313244',
+        background: 'var(--bg-secondary)',
+        borderBottom: '1px solid var(--border-color)',
         fontSize: 12,
         fontFamily: 'monospace',
         flexShrink: 0,
       }}>
-        <Text style={{ flex: 1, color: '#f38ba8', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+        <Text style={{ flex: 1, color: 'var(--csv-deleted-text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
           {content.oldName || tab.leftPath || t('diff.deleted')}
         </Text>
-        <Text style={{ width: 40, textAlign: 'center', color: '#585b70', fontWeight: 700 }}>⇔</Text>
-        <Text style={{ flex: 1, color: '#a6e3a1', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', textAlign: 'right' }}>
+        <Text style={{ width: 40, textAlign: 'center', color: 'var(--text-faint)', fontWeight: 700 }}>⇔</Text>
+        <Text style={{ flex: 1, color: 'var(--csv-added-text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', textAlign: 'right' }}>
           {content.newName || tab.rightPath || t('diff.new')}
         </Text>
       </div>
@@ -203,7 +204,7 @@ export default function DiffView({ tab }: DiffViewProps) {
           original={content.original}
           modified={content.modified}
           language={content.language || 'plaintext'}
-          theme="vs-dark"
+          theme={isDark ? 'vs-dark' : 'light'}
           options={{
             readOnly: true,
             renderSideBySide: true,

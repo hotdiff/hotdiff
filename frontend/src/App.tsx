@@ -10,12 +10,14 @@ import type { TabData, CompareProgress, CompareSummary } from './models/types';
 import HomeView from './components/HomeView';
 import ResultView from './components/ResultView';
 import DiffView from './components/DiffView';
+import { useTheme } from './contexts/ThemeContext';
 
 const { Content } = Layout;
 const HOME_TAB_ID = 'home';
 
 export default function App() {
   const { t, i18n } = useTranslation();
+  const { isDark } = useTheme();
 
   useEffect(() => {
     WindowSetTitle(t('window.title'));
@@ -113,7 +115,7 @@ export default function App() {
       case 'result':
         return <ResultView tab={tab} onOpenFileDiff={onOpenFileDiff} />;
       case 'file':
-        return <DiffView tab={tab} />;
+        return <DiffView tab={tab} isDark={isDark} />;
       default:
         return null;
     }
@@ -126,22 +128,28 @@ export default function App() {
     ],
   };
 
+  const themeConfig = isDark ? {
+    algorithm: theme.darkAlgorithm,
+    token: {
+      colorPrimary: '#fb923c',
+      colorBgContainer: '#1e1e2e',
+      colorBgElevated: '#181825',
+      colorBgLayout: '#11111b',
+      colorBorder: '#313244',
+      colorText: '#cdd6f4',
+      colorTextSecondary: '#a6adc8',
+      borderRadius: 6,
+    },
+  } : {
+    algorithm: theme.defaultAlgorithm,
+    token: {
+      colorPrimary: '#c2410c',
+      borderRadius: 6,
+    },
+  };
+
   return (
-    <ConfigProvider
-      theme={{
-        algorithm: theme.darkAlgorithm,
-        token: {
-          colorPrimary: '#cba6f7',
-          colorBgContainer: '#1e1e2e',
-          colorBgElevated: '#181825',
-          colorBgLayout: '#11111b',
-          colorBorder: '#313244',
-          colorText: '#cdd6f4',
-          colorTextSecondary: '#a6adc8',
-          borderRadius: 6,
-        },
-      }}
-    >
+    <ConfigProvider theme={themeConfig}>
       <Layout style={{ height: '100vh' }}>
         <Content style={{ display: 'flex', flexDirection: 'column' }}>
           <Tabs
@@ -156,9 +164,9 @@ export default function App() {
             hideAdd
             tabBarExtraContent={
               <div style={{ display: 'flex', alignItems: 'center' }}>
-                <Button type="text" icon={<HomeOutlined />} onClick={() => setActiveTab(HOME_TAB_ID)} style={{ color: '#a6adc8', marginRight: 8 }} />
+                <Button type="text" icon={<HomeOutlined />} onClick={() => setActiveTab(HOME_TAB_ID)} style={{ color: 'var(--text-secondary)', marginRight: 8 }} />
                 <Dropdown menu={langItems} trigger={['click']}>
-                  <Button type="text" icon={<GlobalOutlined />} style={{ color: '#a6adc8', marginRight: 8 }} />
+                  <Button type="text" icon={<GlobalOutlined />} style={{ color: 'var(--text-secondary)', marginRight: 8 }} />
                 </Dropdown>
               </div>
             }
@@ -174,7 +182,7 @@ export default function App() {
               children: renderTabContent(tab),
             }))}
             style={{ flex: 1, display: 'flex', flexDirection: 'column' }}
-            tabBarStyle={{ background: '#11111b', margin: 0, paddingLeft: 8 }}
+            tabBarStyle={{ background: 'var(--bg-layout)', margin: 0, paddingLeft: 8 }}
           />
         </Content>
       </Layout>

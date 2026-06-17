@@ -12,14 +12,14 @@ const inputStyle: React.CSSProperties = {
   height: 44,
   fontSize: 14,
   borderRadius: 10,
-  border: '1px solid rgba(255,255,255,0.08)',
-  background: 'rgba(255,255,255,0.04)',
-  color: '#cdd6f4',
+  border: '1px solid var(--border-color)',
+  background: 'var(--bg-hover)',
+  color: 'var(--text-primary)',
   cursor: 'pointer',
 };
 
 const iconBtnStyle: React.CSSProperties = {
-  color: 'rgba(205,214,244,0.45)',
+  color: 'var(--icon-color)',
   width: 32,
   height: 32,
   display: 'flex',
@@ -58,7 +58,7 @@ export default function HomeView({ onCompare }: HomeViewProps) {
         margin: 0,
         fontSize: 48,
         fontWeight: 600,
-        color: '#cdd6f4',
+        color: 'var(--text-primary)',
         letterSpacing: '-0.5px',
       }}>
         {t('app.title')}
@@ -121,8 +121,8 @@ export default function HomeView({ onCompare }: HomeViewProps) {
             fontWeight: 500,
             letterSpacing: '-0.2px',
             border: 'none',
-            background: canCompare ? '#cba6f7' : 'rgba(255,255,255,0.06)',
-            color: canCompare ? '#1e1e2e' : 'rgba(205,214,244,0.25)',
+            background: canCompare ? 'var(--color-primary)' : 'var(--btn-disabled-bg)',
+            color: canCompare ? 'var(--text-on-primary)' : 'var(--text-dimmed)',
           }}
           block
         >
