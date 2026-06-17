@@ -59,7 +59,7 @@ export default function HomeView({ onCompare }: HomeViewProps) {
         color: '#cdd6f4',
         letterSpacing: '-0.5px',
       }}>
-        Hot Diff
+        HOT DIFF
       </h1>
 
       <div style={{
