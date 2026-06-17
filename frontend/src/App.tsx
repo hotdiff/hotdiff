@@ -1,10 +1,11 @@
 import { useState, useCallback, useEffect } from 'react';
-import { ConfigProvider, theme, Layout, Tabs, Button, Dropdown } from 'antd';
+import { ConfigProvider, theme, Layout, Tabs, Button, Dropdown, Modal, Typography } from 'antd';
 import { HomeOutlined, GlobalOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import './i18n';
 import { EventsOn } from '../wailsjs/runtime/runtime';
 import { WindowSetTitle } from '../wailsjs/runtime/runtime';
+import { BrowserOpenURL } from '../wailsjs/runtime/runtime';
 import { StartCompare } from '../wailsjs/go/main/App';
 import type { TabData, CompareProgress, CompareSummary } from './models/types';
 import HomeView from './components/HomeView';
@@ -14,6 +15,7 @@ import { useTheme } from './contexts/ThemeContext';
 
 const { Content } = Layout;
 const HOME_TAB_ID = 'home';
+const { Text, Link } = Typography;
 
 export default function App() {
   const { t, i18n } = useTranslation();
@@ -28,6 +30,11 @@ export default function App() {
     label: 'Home',
   }]);
   const [activeTab, setActiveTab] = useState(HOME_TAB_ID);
+  const [aboutOpen, setAboutOpen] = useState(false);
+
+  useEffect(() => {
+    return EventsOn('show-about', () => setAboutOpen(true));
+  }, []);
 
   const updateTab = useCallback((id: string, updater: (tab: TabData) => TabData) => {
     setTabs(prev => prev.map(t => t.id === id ? updater(t) : t));
@@ -184,6 +191,40 @@ export default function App() {
             style={{ flex: 1, display: 'flex', flexDirection: 'column' }}
             tabBarStyle={{ background: 'var(--bg-layout)', margin: 0, paddingLeft: 8 }}
           />
+          <Modal
+            title={t('about.title')}
+            open={aboutOpen}
+            centered
+            styles={{ header: { textAlign: 'center' }, footer: { display: 'flex', justifyContent: 'center' } }}
+            onOk={() => setAboutOpen(false)}
+            onCancel={() => setAboutOpen(false)}
+            okText="OK"
+            cancelButtonProps={{ style: { display: 'none' } }}
+          >
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'center' }}>
+              <div>
+                <Text type="secondary">{t('about.version')}:</Text>{' '}
+                <Text strong>0.1.0</Text>
+              </div>
+              <div>
+                <Text type="secondary">{t('about.email')}:</Text>{' '}
+                <Text>jack.ju@itiky.com</Text>
+              </div>
+              <div>
+                <Text type="secondary">{t('about.license')}:</Text>{' '}
+                <Text>{t('about.mit')}</Text>
+              </div>
+              <div>
+                <Text type="secondary">{t('about.repository')}:</Text>{' '}
+                <Link onClick={() => BrowserOpenURL('https://github.com/hotdiff/hotdiff')}>
+                  https://github.com/hotdiff/hotdiff
+                </Link>
+              </div>
+              <div style={{ marginTop: 8 }}>
+                <Text type="secondary">{t('about.poweredBy')} v2.12.0</Text>
+              </div>
+            </div>
+          </Modal>
         </Content>
       </Layout>
     </ConfigProvider>

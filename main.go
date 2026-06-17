@@ -5,8 +5,10 @@ import (
 
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/menu"
+	"github.com/wailsapp/wails/v2/pkg/menu/keys"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 //go:embed all:frontend/dist
@@ -16,7 +18,16 @@ func main() {
 	app := NewApp()
 
 	appMenu := menu.NewMenu()
-	appMenu.Append(menu.AppMenu())
+
+	diffMenu := menu.NewMenu()
+	diffMenu.Append(menu.Text("About Hot Diff", nil, func(cd *menu.CallbackData) {
+		runtime.EventsEmit(app.ctx, "show-about", nil)
+	}))
+	diffMenu.Append(menu.Separator())
+	diffMenu.Append(menu.Text("Quit Hot Diff", keys.CmdOrCtrl("q"), func(_ *menu.CallbackData) {
+		runtime.Quit(app.ctx)
+	}))
+	appMenu.Append(menu.SubMenu("Diff", diffMenu))
 
 	err := wails.Run(&options.App{
 		Title:     "Hot Diff",
