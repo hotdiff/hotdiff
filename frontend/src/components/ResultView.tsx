@@ -285,7 +285,7 @@ export default function ResultView({ tab, onOpenFileDiff }: ResultViewProps) {
                 gap: 4, fontWeight: row.isDir ? 600 : undefined,
                 color: row.isDir ? 'var(--dir-color)' : 'var(--text-primary)',
               }}>
-                {row.isDir ? (
+                {!row.isDir && row.status === FileStatus.RightOnly ? null : row.isDir ? (
                   <><FolderOutlined style={{ fontSize: 12, flexShrink: 0 }} /><span>{row.name}</span></>
                 ) : (
                   <><FileOutlined style={{ fontSize: 12, flexShrink: 0, opacity: 0.6 }} /><span>{row.name}</span></>
@@ -308,7 +308,7 @@ export default function ResultView({ tab, onOpenFileDiff }: ResultViewProps) {
                 gap: 4, fontWeight: row.isDir ? 600 : undefined,
                 color: row.isDir ? 'var(--dir-color)' : 'var(--text-primary)',
               }}>
-                {row.isDir ? (
+                {!row.isDir && row.status === FileStatus.LeftOnly ? null : row.isDir ? (
                   <><FolderOutlined style={{ fontSize: 12, flexShrink: 0 }} /><span>{row.name}</span></>
                 ) : (
                   <><FileOutlined style={{ fontSize: 12, flexShrink: 0, opacity: 0.6 }} /><span>{row.rightName || row.name}</span></>
