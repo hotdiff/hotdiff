@@ -39,10 +39,16 @@ export default function DiffView({ tab, isDark }: DiffViewProps) {
 
   if (loading) {
     return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 60 }}>
-        <Spin tip={t('diff.loading')} size="large">
-          <div style={{ height: 50 }} />
-        </Spin>
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '100%',
+        gap: 16,
+      }}>
+        <Spin size="large" />
+        <Text type="secondary" style={{ fontSize: 14 }}>{t('diff.loading')}</Text>
       </div>
     );
   }
