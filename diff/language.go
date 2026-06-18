@@ -42,8 +42,6 @@ func DetectLanguage(path string) string {
 		return "shell"
 	case ".toml", ".ini", ".cfg", ".conf":
 		return "ini"
-	case ".csv":
-		return "csv"
 	case ".proto":
 		return "protobuf"
 	case ".vue":
