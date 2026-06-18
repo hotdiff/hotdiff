@@ -91,6 +91,9 @@ func CompareDirs(leftDir, rightDir string, progressCh chan<- CompareProgress) {
 				fr.IsDir = fi.IsDir()
 				fr.Size = fi.Size()
 			}
+			if IsImageFile(rightPath) {
+				fr.IsImage = true
+			}
 			result.RightOnlyCount++
 
 		case rightPath == "":
@@ -99,6 +102,9 @@ func CompareDirs(leftDir, rightDir string, progressCh chan<- CompareProgress) {
 			if err == nil {
 				fr.IsDir = fi.IsDir()
 				fr.Size = fi.Size()
+			}
+			if IsImageFile(leftPath) {
+				fr.IsImage = true
 			}
 			result.LeftOnlyCount++
 
@@ -109,6 +115,17 @@ func CompareDirs(leftDir, rightDir string, progressCh chan<- CompareProgress) {
 				fr.IsDir = true
 				fr.Status = StatusSame
 				result.SameCount++
+			} else if IsImageFile(leftPath) && IsImageFile(rightPath) {
+				fr.IsImage = true
+				leftData, _ := os.ReadFile(leftPath)
+				rightData, _ := os.ReadFile(rightPath)
+				if bytes.Equal(leftData, rightData) {
+					fr.Status = StatusSame
+					result.SameCount++
+				} else {
+					fr.Status = StatusDifferent
+					result.DifferentCount++
+				}
 			} else {
 				same, similar, err := gitDiffFiles(leftPath, rightPath)
 				if err != nil {

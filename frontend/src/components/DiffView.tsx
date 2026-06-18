@@ -65,6 +65,74 @@ export default function DiffView({ tab, isDark }: DiffViewProps) {
     return <Empty description={t('diff.error.empty')} style={{ padding: 40 }} />;
   }
 
+  if (content.isImage) {
+    return (
+      <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          padding: '6px 16px',
+          background: 'var(--bg-secondary)',
+          borderBottom: '1px solid var(--border-color)',
+          fontSize: 12,
+          fontFamily: 'monospace',
+          flexShrink: 0,
+        }}>
+          <Text style={{ flex: 1, color: 'var(--csv-deleted-text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            {content.oldName || tab.leftPath || t('diff.deleted')}
+          </Text>
+          <Text style={{ width: 40, textAlign: 'center', color: 'var(--text-faint)', fontWeight: 700 }}>⇔</Text>
+          <Text style={{ flex: 1, color: 'var(--csv-added-text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', textAlign: 'right' }}>
+            {content.newName || tab.rightPath || t('diff.new')}
+          </Text>
+        </div>
+        <div style={{
+          flex: 1,
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          overflow: 'auto',
+          background: 'var(--bg-primary)',
+        }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: 16,
+            borderRight: '1px solid var(--border-color)',
+            overflow: 'auto',
+          }}>
+            {content.original ? (
+              <img
+                src={content.original}
+                alt="left"
+                style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
+              />
+            ) : (
+              <Text type="secondary">{t('diff.deleted')}</Text>
+            )}
+          </div>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: 16,
+            overflow: 'auto',
+          }}>
+            {content.modified ? (
+              <img
+                src={content.modified}
+                alt="right"
+                style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
+              />
+            ) : (
+              <Text type="secondary">{t('diff.new')}</Text>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
       <div style={{

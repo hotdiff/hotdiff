@@ -81,3 +81,34 @@ func DetectLanguage(path string) string {
 		return "plaintext"
 	}
 }
+
+var imageExtMap = map[string]string{
+	".png":  "image/png",
+	".jpg":  "image/jpeg",
+	".jpeg": "image/jpeg",
+	".gif":  "image/gif",
+	".bmp":  "image/bmp",
+	".webp": "image/webp",
+	".svg":  "image/svg+xml",
+	".tiff": "image/tiff",
+	".tif":  "image/tiff",
+	".ico":  "image/x-icon",
+	".icns": "image/x-icns",
+	".heic": "image/heic",
+	".heif": "image/heif",
+	".avif": "image/avif",
+}
+
+func IsImageFile(path string) bool {
+	ext := strings.ToLower(filepath.Ext(path))
+	_, ok := imageExtMap[ext]
+	return ok
+}
+
+func GetImageMime(path string) string {
+	ext := strings.ToLower(filepath.Ext(path))
+	if mime, ok := imageExtMap[ext]; ok {
+		return mime
+	}
+	return ""
+}

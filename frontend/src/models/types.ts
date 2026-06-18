@@ -15,6 +15,7 @@ export interface FileResult {
   status: FileStatus;
   isBinary: boolean;
   isCsv: boolean;
+  isImage: boolean;
   isDir: boolean;
   children: FileResult[];
   size: number;
@@ -55,4 +56,5 @@ export interface TabData {
   fileName?: string;
   filePath?: string;
   isCsv?: boolean;
+  isImage?: boolean;
 }

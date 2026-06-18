@@ -6,6 +6,7 @@ export namespace main {
 	    language: string;
 	    oldName: string;
 	    newName: string;
+	    isImage: boolean;
 	    error?: string;
 	
 	    static createFrom(source: any = {}) {
@@ -19,6 +20,7 @@ export namespace main {
 	        this.language = source["language"];
 	        this.oldName = source["oldName"];
 	        this.newName = source["newName"];
+	        this.isImage = source["isImage"];
 	        this.error = source["error"];
 	    }
 	}

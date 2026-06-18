@@ -19,6 +19,7 @@ type FileResult struct {
 	Status       FileStatus  `json:"status"`
 	IsBinary     bool        `json:"isBinary"`
 	IsCsv        bool        `json:"isCsv"`
+	IsImage      bool        `json:"isImage"`
 	IsDir        bool        `json:"isDir"`
 	Children     []FileResult `json:"children"`
 	Size         int64       `json:"size"`

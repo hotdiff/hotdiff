@@ -22,6 +22,7 @@ interface FlatRow {
   leftPath: string;
   rightPath: string;
   isCsv: boolean;
+  isImage: boolean;
 }
 
 function buildFileTree(files: FileResult[]) {
@@ -46,6 +47,7 @@ function buildFileTree(files: FileResult[]) {
           leftPath: isDir ? '' : f.leftPath,
           rightPath: isDir ? '' : f.rightPath,
           isCsv: f.isCsv,
+          isImage: f.isImage,
         };
         current.push(existing);
       }
@@ -72,6 +74,7 @@ function flattenTree(nodes: any[], rows: FlatRow[], depth: number) {
       leftPath: node.leftPath,
       rightPath: node.rightPath,
       isCsv: node.isCsv,
+      isImage: node.isImage,
     });
     if (node.children && node.children.length > 0) {
       flattenTree(node.children, rows, depth + 1);
@@ -164,6 +167,7 @@ export default function ResultView({ tab, onOpenFileDiff }: ResultViewProps) {
       leftPath: row.leftPath,
       rightPath: row.rightPath,
       isCsv: row.isCsv,
+      isImage: row.isImage,
       loading: true,
     };
     onOpenFileDiff(fileTab);

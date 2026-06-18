@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"context"
+	"encoding/base64"
 	"hotdiff/diff"
 	"os"
 
@@ -64,6 +65,7 @@ type DiffDetailResult struct {
 	Language string `json:"language"`
 	OldName  string `json:"oldName"`
 	NewName  string `json:"newName"`
+	IsImage  bool   `json:"isImage"`
 	Error    string `json:"error,omitempty"`
 }
 
@@ -89,6 +91,33 @@ func buildDiffDetail(leftPath, rightPath string) *DiffDetailResult {
 		result.NewName = "[new]"
 	}
 	result.Language = lang
+
+	isLeftImg := leftPath != "" && diff.IsImageFile(leftPath)
+	isRightImg := rightPath != "" && diff.IsImageFile(rightPath)
+
+	if isLeftImg || isRightImg {
+		result.IsImage = true
+		result.Language = "image"
+		if leftPath != "" {
+			data, err := os.ReadFile(leftPath)
+			if err != nil {
+				result.Error = "Failed to read left image: " + err.Error()
+				return result
+			}
+			mime := diff.GetImageMime(leftPath)
+			result.Original = "data:" + mime + ";base64," + base64.StdEncoding.EncodeToString(data)
+		}
+		if rightPath != "" {
+			data, err := os.ReadFile(rightPath)
+			if err != nil {
+				result.Error = "Failed to read right image: " + err.Error()
+				return result
+			}
+			mime := diff.GetImageMime(rightPath)
+			result.Modified = "data:" + mime + ";base64," + base64.StdEncoding.EncodeToString(data)
+		}
+		return result
+	}
 
 	if leftPath != "" {
 		data, err := os.ReadFile(leftPath)
