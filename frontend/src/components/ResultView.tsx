@@ -179,8 +179,14 @@ export default function ResultView({ tab, onOpenFileDiff }: ResultViewProps) {
 
   if (tab.loading) {
     return (
-      <div style={{ padding: 40 }}>
-        <div style={{ maxWidth: 400, margin: '0 auto' }}>
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '100%',
+      }}>
+        <div style={{ maxWidth: 400, width: '100%' }}>
           <Spin tip={t('result.comparing')} size="large" style={{ display: 'block', marginBottom: 24 }}>
             <div style={{ height: 50 }} />
           </Spin>
@@ -189,10 +195,11 @@ export default function ResultView({ tab, onOpenFileDiff }: ResultViewProps) {
               percent={tab.progress.total > 0 ? Math.round((tab.progress.current / tab.progress.total) * 100) : 0}
               format={() => `${tab.progress?.current || 0} / ${tab.progress?.total || 0}`}
               strokeColor={{ from: 'var(--color-primary)', to: 'var(--status-left-only)' }}
+              style={{ marginTop: 24 }}
             />
           )}
           {tab.progress && (
-            <Text type="secondary" style={{ display: 'block', textAlign: 'center', marginTop: 8, fontSize: 14 }}>
+            <Text type="secondary" style={{ display: 'block', textAlign: 'center', marginTop: 16, fontSize: 14 }}>
               {tab.progress.fileName}
             </Text>
           )}
