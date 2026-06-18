@@ -9,8 +9,8 @@
     "title": "Hot Diff - 文件比较工具"
   },
   "home": {
-    "chooseLeft": "选择旧文件或目录...",
-    "chooseRight": "选择新文件或目录...",
+    "chooseLeft": "选择旧目录或文件...",
+    "chooseRight": "选择新目录或文件...",
     "compare": "开始比较"
   },
   "result": {
