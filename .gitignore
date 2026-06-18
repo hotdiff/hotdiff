@@ -7,3 +7,4 @@ frontend/dist
 frontend/node_modules
 .DS_Store
 build/windows/icon.ico
+frontend/package.json.md5
