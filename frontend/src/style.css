@@ -125,11 +125,3 @@ body {
   height: 100%;
   overflow: hidden;
 }
-
-.csv-diff-grid .header__pin {
-  display: none !important;
-}
-
-.csv-diff-grid .header__title button.header__icon:not(.header__pin) {
-  display: none !important;
-}

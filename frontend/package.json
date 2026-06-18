@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "@ant-design/icons": "^5.0.1",
-    "@githubocto/flat-ui": "^0.14.1",
     "@monaco-editor/react": "^4.6.0",
     "antd": "^5.12.0",
     "i18next": "^26.3.1",

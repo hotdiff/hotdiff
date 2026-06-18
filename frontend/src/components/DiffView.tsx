@@ -1,9 +1,8 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { Typography, Spin, Alert, Empty } from 'antd';
 import { DiffEditor, loader } from '@monaco-editor/react';
 import * as monaco from 'monaco-editor';
 import { useTranslation } from 'react-i18next';
-import { Grid } from '@githubocto/flat-ui';
 import type { TabData } from '../models/types';
 import type { main } from '../../wailsjs/go/models';
 import { GetDiffDetail } from '../../wailsjs/go/main/App';
@@ -15,34 +14,6 @@ const { Text } = Typography;
 interface DiffViewProps {
   tab: TabData;
   isDark: boolean;
-}
-
-function CsvDiffView({ leftData, rightData }: { leftData: string; rightData: string }) {
-  const { t } = useTranslation();
-
-  const leftRows = useMemo(() => {
-    if (!leftData) return [];
-    try { return JSON.parse(leftData) as Record<string, string>[]; } catch { return []; }
-  }, [leftData]);
-
-  const rightRows = useMemo(() => {
-    if (!rightData) return [];
-    try { return JSON.parse(rightData) as Record<string, string>[]; } catch { return []; }
-  }, [rightData]);
-
-  if (!leftRows.length && !rightRows.length) {
-    return <Empty description={t('diff.error.identical')} style={{ padding: 40 }} />;
-  }
-
-  return (
-    <div className="csv-diff-grid" style={{ height: '100%', overflow: 'hidden' }}>
-      <Grid
-        data={leftRows}
-        diffData={rightRows.length > 0 ? rightRows : undefined}
-        canDownload={false}
-      />
-    </div>
-  );
 }
 
 export default function DiffView({ tab, isDark }: DiffViewProps) {
@@ -86,15 +57,6 @@ export default function DiffView({ tab, isDark }: DiffViewProps) {
 
   if (!content) {
     return <Empty description={t('diff.error.empty')} style={{ padding: 40 }} />;
-  }
-
-  if (content.isCsv && content.csvLeftData !== undefined && content.csvRightData !== undefined) {
-    return (
-      <CsvDiffView
-        leftData={content.csvLeftData}
-        rightData={content.csvRightData}
-      />
-    );
   }
 
   return (

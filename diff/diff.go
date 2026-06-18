@@ -109,20 +109,6 @@ func CompareDirs(leftDir, rightDir string, progressCh chan<- CompareProgress) {
 				fr.IsDir = true
 				fr.Status = StatusSame
 				result.SameCount++
-			} else if isLikelyCsv(leftPath) || isLikelyCsv(rightPath) {
-				fr.IsCsv = true
-				same, err := compareCsvFiles(leftPath, rightPath)
-				if err != nil {
-					fr.ErrMsg = err.Error()
-					fr.Status = StatusDifferent
-					result.DifferentCount++
-				} else if same {
-					fr.Status = StatusSame
-					result.SameCount++
-				} else {
-					fr.Status = StatusDifferent
-					result.DifferentCount++
-				}
 			} else {
 				same, similar, err := gitDiffFiles(leftPath, rightPath)
 				if err != nil {
@@ -218,13 +204,4 @@ func gitDiffFiles(leftPath, rightPath string) (same bool, similar bool, err erro
 		return false, false, err
 	}
 	return true, false, nil
-}
-
-func IsLikelyCsv(path string) bool {
-	ext := strings.ToLower(filepath.Ext(path))
-	return ext == ".csv" || ext == ".tsv"
-}
-
-func isLikelyCsv(path string) bool {
-	return IsLikelyCsv(path)
 }

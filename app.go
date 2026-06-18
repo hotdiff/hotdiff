@@ -60,36 +60,18 @@ func (a *App) GetDiffDetail(leftPath, rightPath string) *DiffDetailResult {
 }
 
 type DiffDetailResult struct {
-	Original     string             `json:"original"`
-	Modified     string             `json:"modified"`
-	Language     string             `json:"language"`
-	IsCsv        bool               `json:"isCsv"`
-	CsvTable     *diff.CsvDiffTable `json:"csvTable,omitempty"`
-	CsvLeftData  string             `json:"csvLeftData,omitempty"`
-	CsvRightData string             `json:"csvRightData,omitempty"`
-	OldName      string             `json:"oldName"`
-	NewName      string             `json:"newName"`
-	Error        string             `json:"error,omitempty"`
+	Original string `json:"original"`
+	Modified string `json:"modified"`
+	Language string `json:"language"`
+	OldName  string `json:"oldName"`
+	NewName  string `json:"newName"`
+	Error    string `json:"error,omitempty"`
 }
 
 func buildDiffDetail(leftPath, rightPath string) *DiffDetailResult {
 	result := &DiffDetailResult{
 		OldName: leftPath,
 		NewName: rightPath,
-	}
-
-	if diff.IsLikelyCsv(leftPath) || diff.IsLikelyCsv(rightPath) {
-		result.IsCsv = true
-		result.OldName = filepath.Base(leftPath)
-		result.NewName = filepath.Base(rightPath)
-		leftData, rightData, err := diff.ReadCsvAsJSON(leftPath, rightPath)
-		if err != nil {
-			result.Error = err.Error()
-			return result
-		}
-		result.CsvLeftData = leftData
-		result.CsvRightData = rightData
-		return result
 	}
 
 	lang := ""
