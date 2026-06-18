@@ -5,7 +5,6 @@ import (
 	"context"
 	"hotdiff/diff"
 	"os"
-	"path/filepath"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
@@ -77,7 +76,7 @@ func buildDiffDetail(leftPath, rightPath string) *DiffDetailResult {
 	lang := ""
 	if leftPath != "" {
 		lang = diff.DetectLanguage(leftPath)
-		result.OldName = filepath.Base(leftPath)
+		result.OldName = leftPath
 	} else {
 		result.OldName = "[deleted]"
 	}
@@ -85,7 +84,7 @@ func buildDiffDetail(leftPath, rightPath string) *DiffDetailResult {
 		if lang == "" {
 			lang = diff.DetectLanguage(rightPath)
 		}
-		result.NewName = filepath.Base(rightPath)
+		result.NewName = rightPath
 	} else {
 		result.NewName = "[new]"
 	}
