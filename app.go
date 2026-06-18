@@ -79,16 +79,12 @@ func buildDiffDetail(leftPath, rightPath string) *DiffDetailResult {
 	if leftPath != "" {
 		lang = diff.DetectLanguage(leftPath)
 		result.OldName = leftPath
-	} else {
-		result.OldName = "[deleted]"
 	}
 	if rightPath != "" {
 		if lang == "" {
 			lang = diff.DetectLanguage(rightPath)
 		}
 		result.NewName = rightPath
-	} else {
-		result.NewName = "[new]"
 	}
 	result.Language = lang
 

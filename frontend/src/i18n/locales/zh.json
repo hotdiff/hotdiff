@@ -31,8 +31,8 @@
       "identical": "文件相同",
       "binary": "不支持二进制文件比较"
     },
-    "deleted": "[已删除]",
-    "new": "[新增]"
+    "deleted": "已删除",
+    "new": "待创建"
   },
   "menu": {
     "lang": "Language"

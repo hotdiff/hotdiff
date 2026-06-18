@@ -31,8 +31,8 @@
       "identical": "Files are identical",
       "binary": "Binary file comparison is not supported"
     },
-    "deleted": "[deleted]",
-    "new": "[new]"
+    "deleted": "Deleted",
+    "new": "New"
   },
   "menu": {
     "lang": "Language"
