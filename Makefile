@@ -1,5 +1,5 @@
 APP_NAME := HotDiff
-VERSION ?= 0.2.0
+VERSION ?= 0.3.0
 ARCH := $(shell uname -m)
 OS := $(shell uname -s)
 DIST := dist

@@ -204,7 +204,7 @@ export default function App() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'center' }}>
               <div>
                 <Text type="secondary">{t('about.version')}:</Text>{' '}
-                <Text strong>0.2.0</Text>
+                <Text strong>0.3.0</Text>
               </div>
               <div>
                 <Text type="secondary">{t('about.email')}:</Text>{' '}
